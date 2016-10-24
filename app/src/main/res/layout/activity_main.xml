@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="cn.lemon.whiteboard.MainActivity">
+
+    <include layout="@layout/include_toolbar" />
+
+    <cn.lemon.whiteboard.BoardView
+        android:id="@+id/board_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <LinearLayout
+        android:layout_gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/curve"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="曲线" />
+
+        <Button
+            android:id="@+id/line"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="直线" />
+
+        <Button
+            android:id="@+id/rectangle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="矩形" />
+
+        <Button
+            android:id="@+id/oval"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="椭圆" />
+
+        <Button
+            android:id="@+id/clear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="清屏" />
+
+    </LinearLayout>
+
+
+
+</LinearLayout>
