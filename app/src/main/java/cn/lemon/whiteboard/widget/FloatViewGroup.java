@@ -9,20 +9,18 @@ import android.view.ViewGroup;
 import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by alien on 2015/6/15.
  */
-public class FloatViewGroup extends ViewGroup {
+public class FloatViewGroup extends ViewGroup implements View.OnClickListener {
     private FloatAdapter adapter;
     private ObjectAnimator animator;
     private ImageView mSwitchView;
-    private List<View> views = new ArrayList<>();
     private int width, height;
-    private static boolean IS_EXPAND = false;
-    private static int EXTENT_TIME = 200, SHRINK_TIME = 200;
+    private int mItemCount;
+    private View[] mItems;
+    private boolean IS_EXPAND = false;
+    private int CHANGE_TIME = 200;
 
     public FloatViewGroup(Context context) {
         this(context, null);
@@ -51,7 +49,6 @@ public class FloatViewGroup extends ViewGroup {
             view.layout(width - view.getMeasuredWidth(),
                     height - view.getMeasuredHeight(),
                     width, height);
-            views.add(view);
         }
     }
 
@@ -65,59 +62,74 @@ public class FloatViewGroup extends ViewGroup {
             return;
         }
         mSwitchView = adapter.getSwitchView();
-        final int itemNum = adapter.getCount();
-        final View[] items = new View[itemNum];
-        for (int i = 0; i < itemNum; i++) {
-            items[i] = adapter.getItem(i);
-            items[i].setVisibility(INVISIBLE);
-            addView(items[i]);
+        mItemCount = adapter.getCount();
+        mItems = new View[mItemCount];
+        for (int i = 0; i < mItemCount; i++) {
+            mItems[i] = adapter.getItem(i);
+            mItems[i].setVisibility(INVISIBLE);
+            addView(mItems[i]);
         }
         addView(mSwitchView);
 
         mSwitchView.setClickable(true);
-        mSwitchView.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!IS_EXPAND) {
-                    ObjectAnimator.ofFloat(mSwitchView, "rotation", 0f, 180f + 45f).setDuration(EXTENT_TIME).start();
-                    for (int i = 0; i < itemNum; i++) {
-                        float curTranslationY = items[i].getTranslationY();
-                        animator = ObjectAnimator.ofFloat(items[i], "translationY", curTranslationY, -(i + 1) * items[i].getMeasuredHeight());
-                        animator.setInterpolator(new OvershootInterpolator());
-                        animator.setDuration(EXTENT_TIME).start();
-                        items[i].setVisibility(VISIBLE);
-                    }
-                    IS_EXPAND = true;
-                } else {
-                    ObjectAnimator.ofFloat(mSwitchView, "rotation", 180f + 45f, 0f).setDuration(SHRINK_TIME).start();
-                    for (int i = 0; i < itemNum; i++) {
-                        float curTranslationY = items[i].getTranslationY();
-                        animator = ObjectAnimator.ofFloat(items[i], "translationY", curTranslationY, 0f);
-                        animator.setDuration(SHRINK_TIME).start();
-                        final int finalI = i;
-                        animator.addListener(new Animator.AnimatorListener() {
-                            @Override
-                            public void onAnimationStart(Animator animation) {
-                            }
-
-                            @Override
-                            public void onAnimationEnd(Animator animation) {
-                                items[finalI].setVisibility(INVISIBLE);
-                            }
-
-                            @Override
-                            public void onAnimationCancel(Animator animation) {
-                            }
-
-                            @Override
-                            public void onAnimationRepeat(Animator animation) {
-                            }
-                        });
-                    }
-                    IS_EXPAND = false;
-                }
-            }
-        });
+        mSwitchView.setOnClickListener(this);
     }
 
+    //打开
+    public void expandViews() {
+        ObjectAnimator.ofFloat(mSwitchView, "rotation", 0f, 90f + 45f).setDuration(CHANGE_TIME).start();
+        for (int i = 0; i < mItemCount; i++) {
+            float curTranslationY = mItems[i].getTranslationY();
+            animator = ObjectAnimator.ofFloat(mItems[i], "translationY", curTranslationY, -(i + 1) * mItems[i].getMeasuredHeight());
+            animator.setInterpolator(new OvershootInterpolator());
+            animator.setDuration(CHANGE_TIME).start();
+            mItems[i].setVisibility(VISIBLE);
+        }
+        IS_EXPAND = true;
+    }
+
+    public void checkShrinkViews(){
+        if(IS_EXPAND){
+            shrinkViews();
+        }
+    }
+
+    //关闭
+    public void shrinkViews() {
+        ObjectAnimator.ofFloat(mSwitchView, "rotation", 90f + 45f, 0f).setDuration(CHANGE_TIME).start();
+        for (int i = 0; i < mItemCount; i++) {
+            float curTranslationY = mItems[i].getTranslationY();
+            animator = ObjectAnimator.ofFloat(mItems[i], "translationY", curTranslationY, 0f);
+            animator.setDuration(CHANGE_TIME).start();
+            final int finalI = i;
+            animator.addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mItems[finalI].setVisibility(INVISIBLE);
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+                    }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+                }
+            });
+            }
+        IS_EXPAND = false;
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (IS_EXPAND) {
+            shrinkViews();
+        } else {
+            expandViews();
+        }
+    }
 }

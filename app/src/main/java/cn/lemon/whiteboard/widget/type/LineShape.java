@@ -5,7 +5,7 @@ import android.graphics.Canvas;
 import cn.lemon.whiteboard.widget.BoardView;
 
 /**
- * Created by linlongxin on 2016/10/21.
+ * Created by linlongxin on 2016/10/24.
  */
 
 public class LineShape extends DrawShape {

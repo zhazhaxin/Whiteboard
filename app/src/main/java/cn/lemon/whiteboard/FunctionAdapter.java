@@ -8,9 +8,9 @@ import cn.lemon.whiteboard.widget.type.Type;
 
 class FunctionAdapter extends FloatAdapter {
 
-    private String[] mHints = {"矩形", "圆形", "直线", "曲线"};
-    private int[] mDrawables = {R.drawable.ic_rectangle, R.drawable.ic_oval,
-            R.drawable.ic_line, R.drawable.ic_curve};
+    private String[] mHints = {"清屏","擦除","矩形", "圆形", "直线", "曲线"};
+    private int[] mDrawables = {R.drawable.ic_clear,R.drawable.ic_wipe,R.drawable.ic_rectangle,
+            R.drawable.ic_oval, R.drawable.ic_line, R.drawable.ic_curve};
 
     private BoardView mBoardView;
 
@@ -21,7 +21,7 @@ class FunctionAdapter extends FloatAdapter {
 
     @Override
     public int getCount() {
-        return 4;
+        return mHints.length;
     }
 
     @Override
@@ -43,18 +43,22 @@ class FunctionAdapter extends FloatAdapter {
     public void onItemClick(int position) {
         switch (position){
             case 0:
-                mBoardView.setDrawType(Type.RECTANGLE);
+                mBoardView.clear();
                 break;
             case 1:
-                mBoardView.setDrawType(Type.OVAL);
+                mBoardView.setWipeMode(true);
                 break;
             case 2:
-                mBoardView.setDrawType(Type.LINE);
+                mBoardView.setDrawType(Type.RECTANGLE);
                 break;
             case 3:
-                mBoardView.setDrawType(Type.CURVE);
+                mBoardView.setDrawType(Type.OVAL);
                 break;
             case 4:
+                mBoardView.setDrawType(Type.LINE);
+                break;
+            case 5:
+                mBoardView.setDrawType(Type.CURVE);
                 break;
         }
 

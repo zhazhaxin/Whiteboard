@@ -5,12 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="cn.lemon.whiteboard.MainActivity"
-    tools:showIn="@layout/main_app_bar">
+    android:orientation="vertical">
+
+    <include layout="@layout/include_toolbar" />
 
     <cn.lemon.whiteboard.widget.BoardView
+        android:layout_below="@+id/toolbar"
         android:id="@+id/board_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
 
     <cn.lemon.whiteboard.widget.FloatViewGroup
         android:id="@+id/float_view_group"

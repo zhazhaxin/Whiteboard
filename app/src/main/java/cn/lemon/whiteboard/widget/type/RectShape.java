@@ -7,7 +7,7 @@ import android.util.Log;
 import cn.lemon.whiteboard.widget.BoardView;
 
 /**
- * Created by linlongxin on 2016/10/21.
+ * Created by linlongxin on 2016/10/24.
  */
 
 public class RectShape extends DrawShape {

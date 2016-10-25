@@ -1,7 +1,7 @@
 package cn.lemon.whiteboard.widget.type;
 
 /**
- * Created by linlongxin on 2016/10/21.
+ * Created by linlongxin on 2016/10/24.
  */
 
 public interface Type {

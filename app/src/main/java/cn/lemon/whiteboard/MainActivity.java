@@ -1,5 +1,6 @@
 package cn.lemon.whiteboard;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -9,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import cn.lemon.common.base.ToolbarActivity;
+import cn.lemon.whiteboard.data.CurveModel;
 import cn.lemon.whiteboard.widget.BoardView;
 import cn.lemon.whiteboard.widget.FloatAdapter;
 import cn.lemon.whiteboard.widget.FloatViewGroup;
@@ -40,7 +42,12 @@ public class MainActivity extends ToolbarActivity
 
         mAdapter = new FunctionAdapter(this,mBoardView);
         mFloatViews.setAdapter(mAdapter);
-
+        mBoardView.setOnDownAction(new BoardView.OnDownAction() {
+            @Override
+            public void dealDownAction() {
+                mFloatViews.checkShrinkViews();
+            }
+        });
     }
 
     @Override
@@ -55,24 +62,26 @@ public class MainActivity extends ToolbarActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main2, menu);
+        getMenuInflater().inflate(R.menu.main_activity, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (item.getItemId()) {
+            case R.id.save_image:
+                CurveModel.getInstance().saveCurve(mBoardView.getDrawBitmap());
+                break;
+            case R.id.save_note:
+                break;
+            case R.id.color:
+                mBoardView.getCurrentShape().setPaintColor(Color.BLUE);
+                break;
+            case R.id.size:
+                mBoardView.getCurrentShape().setPaintWidth(15f);
+                break;
         }
-
-        return super.onOptionsItemSelected(item);
+        return true;
     }
 
     @SuppressWarnings("StatementWithEmptyBody")

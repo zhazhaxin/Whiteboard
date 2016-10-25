@@ -7,7 +7,7 @@ import android.graphics.Paint;
 import cn.lemon.whiteboard.widget.BoardView;
 
 /**
- * Created by linlongxin on 2016/10/20.
+ * Created by linlongxin on 2016/10/24.
  */
 
 public abstract class DrawShape {

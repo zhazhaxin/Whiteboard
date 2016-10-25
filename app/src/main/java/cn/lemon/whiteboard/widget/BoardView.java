@@ -6,7 +6,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -17,12 +16,14 @@ import cn.lemon.whiteboard.widget.type.OvalShape;
 import cn.lemon.whiteboard.widget.type.RectShape;
 import cn.lemon.whiteboard.widget.type.Type;
 
+/**
+ * Created by linlongxin on 2016/10/24.
+ */
 public class BoardView extends View {
 
     private final String TAG = "BoardView";
     //类型：默认曲线
     private int mDrawType = Type.CURVE;
-    //用于保存之前每次绘制的图像
     private Bitmap mDrawBitmap;
     private Canvas mCanvas;
     private Paint mPaint;  //渲染画布
@@ -31,7 +32,10 @@ public class BoardView extends View {
     private int mStartX = 0;
     private int mStartY = 0;
 
+    private final float WIPE_SIZE = 50f;
+
     private boolean isClear = false;
+    private OnDownAction mDownAction;
 
     public BoardView(Context context) {
         this(context, null);
@@ -51,13 +55,11 @@ public class BoardView extends View {
         super.onLayout(changed, left, top, right, bottom);
         int width = getMeasuredWidth();
         int height = getMeasuredHeight();
-        mDrawBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-        mCanvas = new Canvas(mDrawBitmap);
+        mDrawBitmap = createBitmap(width,height);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
-        Log.i(TAG, "onDraw");
         //绘制到mDrawBitmap
         canvas.drawBitmap(mDrawBitmap, 0, 0, mPaint);
         //同步绘制到BoardView自己的画布上
@@ -72,6 +74,9 @@ public class BoardView extends View {
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
+                if(mDownAction != null){
+                    mDownAction.dealDownAction();
+                }
                 mStartX = (int) event.getX();
                 mStartY = (int) event.getY();
                 //曲线
@@ -100,6 +105,7 @@ public class BoardView extends View {
             case MotionEvent.ACTION_UP:
                 //把之前的path保存绘制到mDrawBitmap上
                 mShape.draw(mCanvas);
+                invalidate();
                 return true;
 
             default:
@@ -114,11 +120,43 @@ public class BoardView extends View {
         invalidate();
     }
 
+    public void setWipeMode(boolean isWipe){
+        if(isWipe){
+            mShape.setPaintColor(Color.WHITE);
+            mShape.setPaintWidth(WIPE_SIZE);
+        }
+    }
+
+    public DrawShape getCurrentShape(){
+        return mShape;
+    }
+
     public void setDrawType(int type){
         mDrawType = type;
     }
 
     public Bitmap getDrawBitmap(){
         return mDrawBitmap;
+    }
+
+    //创建白色背景的bitmap
+    public Bitmap createBitmap(int width,int height){
+        Paint paint = new Paint();
+        paint.setColor(Color.WHITE);
+        Bitmap bitmap = Bitmap.createBitmap(width,
+                height, Bitmap.Config.ARGB_8888);
+        mCanvas = new Canvas(bitmap);
+        mCanvas.drawRect(0, 0, width, height, paint);
+        mCanvas.drawBitmap(bitmap, 0, 0, paint);
+        return bitmap;
+    }
+
+    //暴露down事件给floatviewgroup
+    public void setOnDownAction(OnDownAction action){
+        mDownAction = action;
+    }
+
+    public interface OnDownAction{
+        void dealDownAction();
     }
 }

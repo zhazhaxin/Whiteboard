@@ -49,9 +49,6 @@ public abstract class FloatAdapter {
     public ImageView getSwitchView() {
         ImageView switchView = new ImageView(mContext);
         switchView.setLayoutParams(new ViewGroup.LayoutParams(Utils.dip2px(48),Utils.dip2px(48)));
-
-//        View switchView = LayoutInflater.from(mContext).inflate(R.layout.widget_float_switch, null);
-//        ImageView mainImg = (ImageView) switchView.findViewById(R.id.switch_button);
         switchView.setImageResource(getMainResource());
         return switchView;
     }

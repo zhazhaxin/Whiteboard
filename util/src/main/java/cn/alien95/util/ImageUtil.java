@@ -334,6 +334,7 @@ public class ImageUtil {
             bos.close();
         } catch (Exception e) {
             e.printStackTrace();
+            Utils.Log(e.getMessage());
             return false;
         }
         return true;

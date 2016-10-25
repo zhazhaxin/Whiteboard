@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/size"
+        android:icon="@drawable/ic_size"
+        android:orderInCategory="90"
+        app:showAsAction="always"
+        android:title="线条大小" />
+
+    <item
+        android:id="@+id/color"
+        android:icon="@drawable/ic_color"
+        android:orderInCategory="90"
+        app:showAsAction="always"
+        android:title="调色" />
+    <item
+        android:id="@+id/save_note"
+        android:title="保存笔迹"
+        android:orderInCategory="100"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/save_image"
+        android:title="保存为图片"
+        android:orderInCategory="80"
+        app:showAsAction="never" />
+
+</menu>

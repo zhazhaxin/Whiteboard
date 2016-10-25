@@ -4,7 +4,9 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 
 import cn.lemon.whiteboard.widget.BoardView;
-
+/**
+ * Created by linlongxin on 2016/10/24.
+ */
 //曲线
 public class CurveShape extends DrawShape {
 
