@@ -1,22 +1,22 @@
-package cn.lemon.whiteboard.type;
+package cn.lemon.whiteboard.widget.type;
 
 import android.graphics.Path;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class SerializablePath extends Path implements Serializable
+public class WritablePath extends Path implements Serializable
 {
     private static final long serialVersionUID = 1L;
     private ArrayList<float[]> pathPoints;
 
-    public SerializablePath()
+    public WritablePath()
     {
         super();
         pathPoints = new ArrayList<>();
     }
 
-    public SerializablePath(SerializablePath path)
+    public WritablePath(WritablePath path)
     {
         super(path);
         pathPoints = path.pathPoints;

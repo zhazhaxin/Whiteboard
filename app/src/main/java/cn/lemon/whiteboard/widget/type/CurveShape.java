@@ -1,22 +1,22 @@
-package cn.lemon.whiteboard.type;
+package cn.lemon.whiteboard.widget.type;
 
 import android.graphics.Canvas;
 import android.graphics.Rect;
 
-import cn.lemon.whiteboard.BoardView;
+import cn.lemon.whiteboard.widget.BoardView;
 
 //曲线
-public class Curve extends DrawShape {
+public class CurveShape extends DrawShape {
 
     private Rect mRect;
-    private SerializablePath mPath;
+    private WritablePath mPath;
 
     private float mStartX;
     private float mStartY;
 
-    public Curve(BoardView view) {
+    public CurveShape(BoardView view) {
         super(view);
-        mPath = new SerializablePath();
+        mPath = new WritablePath();
         mRect = new Rect();
     }
 

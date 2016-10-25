@@ -171,4 +171,8 @@ public class SuperModel {
         }
 
     }
+
+    public Context getContext(){
+        return mContext;
+    }
 }

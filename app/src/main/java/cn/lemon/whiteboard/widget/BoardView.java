@@ -1,4 +1,4 @@
-package cn.lemon.whiteboard;
+package cn.lemon.whiteboard.widget;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -10,12 +10,12 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
-import cn.lemon.whiteboard.type.Curve;
-import cn.lemon.whiteboard.type.DrawShape;
-import cn.lemon.whiteboard.type.LineShape;
-import cn.lemon.whiteboard.type.OvalShape;
-import cn.lemon.whiteboard.type.RectShape;
-import cn.lemon.whiteboard.type.Type;
+import cn.lemon.whiteboard.widget.type.CurveShape;
+import cn.lemon.whiteboard.widget.type.DrawShape;
+import cn.lemon.whiteboard.widget.type.LineShape;
+import cn.lemon.whiteboard.widget.type.OvalShape;
+import cn.lemon.whiteboard.widget.type.RectShape;
+import cn.lemon.whiteboard.widget.type.Type;
 
 public class BoardView extends View {
 
@@ -77,7 +77,7 @@ public class BoardView extends View {
                 //曲线
                 switch (mDrawType){
                     case Type.CURVE:
-                        mShape = new Curve(this);
+                        mShape = new CurveShape(this);
                         break;
                     case Type.RECTANGLE:
                         mShape = new RectShape(this);
@@ -116,5 +116,9 @@ public class BoardView extends View {
 
     public void setDrawType(int type){
         mDrawType = type;
+    }
+
+    public Bitmap getDrawBitmap(){
+        return mDrawBitmap;
     }
 }

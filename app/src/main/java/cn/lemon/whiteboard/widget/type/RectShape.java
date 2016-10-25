@@ -1,10 +1,10 @@
-package cn.lemon.whiteboard.type;
+package cn.lemon.whiteboard.widget.type;
 
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.util.Log;
 
-import cn.lemon.whiteboard.BoardView;
+import cn.lemon.whiteboard.widget.BoardView;
 
 /**
  * Created by linlongxin on 2016/10/21.

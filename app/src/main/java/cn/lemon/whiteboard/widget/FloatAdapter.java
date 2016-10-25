@@ -1,0 +1,69 @@
+package cn.lemon.whiteboard.widget;
+
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import cn.alien95.util.Utils;
+import cn.lemon.whiteboard.R;
+
+
+/**
+ * Created by alien on 2015/6/15.
+ */
+public abstract class FloatAdapter {
+
+    private Context mContext;
+
+    public FloatAdapter(Context context) {
+        this.mContext = context;
+    }
+
+    /**
+     * 获取每个子功能view
+     */
+    public View getItem(final int position) {
+        View view = LayoutInflater.from(mContext).inflate(R.layout.widget_float_item, null);
+        ((TextView) view.findViewById(R.id.hint)).setText(getItemHint(position));
+        ImageView item = (ImageView) view.findViewById(R.id.function_button);
+        if (getItemResource(position) == 0) {
+            item.setImageResource(R.drawable.ic_float_switch);
+        } else {
+            item.setImageResource(getItemResource(position));
+        }
+        item.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onItemClick(position);
+            }
+        });
+        return view;
+    }
+
+    /**
+     * 获取开关view
+     */
+    public ImageView getSwitchView() {
+        ImageView switchView = new ImageView(mContext);
+        switchView.setLayoutParams(new ViewGroup.LayoutParams(Utils.dip2px(48),Utils.dip2px(48)));
+
+//        View switchView = LayoutInflater.from(mContext).inflate(R.layout.widget_float_switch, null);
+//        ImageView mainImg = (ImageView) switchView.findViewById(R.id.switch_button);
+        switchView.setImageResource(getMainResource());
+        return switchView;
+    }
+
+    public abstract int getCount();
+
+    public abstract String getItemHint(int position);
+
+    public abstract int getItemResource(int position);
+
+    public abstract int getMainResource();
+
+    public abstract void onItemClick(int position);
+
+}
