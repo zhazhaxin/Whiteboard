@@ -1,6 +1,7 @@
-package cn.lemon.whiteboard;
+package cn.lemon.whiteboard.module.main;
 
 import cn.lemon.common.base.presenter.SuperPresenter;
+import cn.lemon.whiteboard.R;
 
 /**
  * Created by user on 2016/10/24.

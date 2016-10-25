@@ -13,14 +13,14 @@ import cn.lemon.whiteboard.widget.BoardView;
 public abstract class DrawShape {
 
     protected BoardView mDrawView;
-    protected Paint mPaint;
+    protected WritablePaint mPaint;
     protected static int mPaintColor = Color.BLACK;
     protected static float mPaintWidth = 4f;
 
     public DrawShape(BoardView boardView) {
         //注入BoardView对象
         mDrawView = boardView;
-        mPaint = new Paint();
+        mPaint = new WritablePaint();
         mPaint.setAntiAlias(true);
         mPaint.setColor(mPaintColor);
         mPaint.setStyle(Paint.Style.STROKE);

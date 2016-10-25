@@ -11,11 +11,14 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 import cn.alien95.util.AsyncThreadPool;
 import cn.alien95.util.ImageUtil;
 import cn.alien95.util.Utils;
 import cn.lemon.common.base.model.SuperModel;
+import cn.lemon.whiteboard.module.note.Note;
 
 /**
  * Created by user on 2016/10/24.
@@ -77,4 +80,37 @@ public class CurveModel extends SuperModel {
         });
     }
 
+    public void saveNote(Note note) {
+        putObject(MD5(System.currentTimeMillis() + ".0"), note);
+    }
+
+    /**
+     * MD5
+     */
+    public static String MD5(String key) {
+        String cacheKey;
+        try {
+            final MessageDigest mDigest = MessageDigest.getInstance("MD5");
+            mDigest.update(key.getBytes());
+            cacheKey = bytesToHexString(mDigest.digest());
+        } catch (NoSuchAlgorithmException e) {
+            cacheKey = String.valueOf(key.hashCode());
+        }
+        return cacheKey;
+    }
+
+    /**
+     * 字节转换成16进制字符串
+     */
+    private static String bytesToHexString(byte[] bytes) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < bytes.length; i++) {
+            String hex = Integer.toHexString(0xFF & bytes[i]);
+            if (hex.length() == 1) {
+                sb.append('0');
+            }
+            sb.append(hex);
+        }
+        return sb.toString();
+    }
 }

@@ -1,7 +1,8 @@
-package cn.lemon.whiteboard;
+package cn.lemon.whiteboard.module.main;
 
 import android.content.Context;
 
+import cn.lemon.whiteboard.R;
 import cn.lemon.whiteboard.widget.BoardView;
 import cn.lemon.whiteboard.widget.FloatAdapter;
 import cn.lemon.whiteboard.widget.type.Type;
@@ -46,7 +47,7 @@ class FunctionAdapter extends FloatAdapter {
                 mBoardView.clear();
                 break;
             case 1:
-                mBoardView.setWipeMode(true);
+                mBoardView.setWipeMode();
                 break;
             case 2:
                 mBoardView.setDrawType(Type.RECTANGLE);

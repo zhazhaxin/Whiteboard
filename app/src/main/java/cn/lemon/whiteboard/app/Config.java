@@ -6,5 +6,9 @@ package cn.lemon.whiteboard.app;
 
 public class Config {
 
-    public static int BACK_COLOR = 0xFF000000;
+    //MainActivity --> NoteActivity
+    public static final int NOTE_REQUEST_CODE = 465;
+    public static final int NOTE_RESULT_CODE = 666;
+
+    public static final String NOTE_DATA = "note_data";
 }

@@ -175,4 +175,8 @@ public class SuperModel {
     public Context getContext(){
         return mContext;
     }
+
+    public String getObjectCacheDir(){
+        return mObjectCachePath;
+    }
 }

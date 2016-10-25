@@ -4,7 +4,7 @@
     android:id="@+id/content_main2"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="cn.lemon.whiteboard.MainActivity"
+    tools:context="cn.lemon.whiteboard.module.main.MainActivity"
     android:orientation="vertical">
 
     <include layout="@layout/include_toolbar" />

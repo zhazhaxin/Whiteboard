@@ -18,7 +18,7 @@ public class CurveShape extends DrawShape {
 
     public CurveShape(BoardView view) {
         super(view);
-        mPath = new WritablePath();
+        mPath = new WritablePath(mPaint);
         mRect = new Rect();
     }
 
@@ -57,4 +57,9 @@ public class CurveShape extends DrawShape {
     public void draw(Canvas canvas) {
         canvas.drawPath(mPath, mPaint);
     }
+
+    public WritablePath getPath(){
+        return mPath;
+    }
+
 }

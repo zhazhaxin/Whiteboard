@@ -9,12 +9,17 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import cn.alien95.util.Utils;
 import cn.lemon.whiteboard.widget.type.CurveShape;
 import cn.lemon.whiteboard.widget.type.DrawShape;
 import cn.lemon.whiteboard.widget.type.LineShape;
 import cn.lemon.whiteboard.widget.type.OvalShape;
 import cn.lemon.whiteboard.widget.type.RectShape;
 import cn.lemon.whiteboard.widget.type.Type;
+import cn.lemon.whiteboard.widget.type.WritablePath;
 
 /**
  * Created by linlongxin on 2016/10/24.
@@ -35,6 +40,11 @@ public class BoardView extends View {
     private final float WIPE_SIZE = 50f;
 
     private boolean isClear = false;
+    private boolean isCanReCall = true; //是否能撤回
+
+    private List<WritablePath> mSavePath;
+    private List<WritablePath> mDeletePath;
+
     private OnDownAction mDownAction;
 
     public BoardView(Context context) {
@@ -48,6 +58,8 @@ public class BoardView extends View {
     public BoardView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mPaint = new Paint(Paint.DITHER_FLAG);
+        mSavePath = new ArrayList<>();
+        mDeletePath = new ArrayList<>();
     }
 
     @Override
@@ -67,11 +79,14 @@ public class BoardView extends View {
             mShape.draw(canvas);
         }else if(isClear){
             isClear = false;
+            isCanReCall = true;
         }
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        int mCurrentX = (int) event.getX();
+        int mCurrentY = (int) event.getY();
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 if(mDownAction != null){
@@ -85,26 +100,30 @@ public class BoardView extends View {
                         mShape = new CurveShape(this);
                         break;
                     case Type.RECTANGLE:
+                        isCanReCall = false;
                         mShape = new RectShape(this);
                         break;
                     case Type.OVAL:
+                        isCanReCall = false;
                         mShape = new OvalShape(this);
                         break;
                     case Type.LINE:
+                        isCanReCall = false;
                         mShape = new LineShape(this);
                         break;
                 }
                 return true;
 
             case MotionEvent.ACTION_MOVE:
-                int mCurrentX = (int) event.getX();
-                int mCurrentY = (int) event.getY();
                 mShape.touchMove(mStartX, mStartY, mCurrentX, mCurrentY);
                 return true;
 
             case MotionEvent.ACTION_UP:
                 //把之前的path保存绘制到mDrawBitmap上
                 mShape.draw(mCanvas);
+                if (isCanReCall && mShape instanceof CurveShape) {
+                    mSavePath.add(((CurveShape) mShape).getPath());
+                }
                 invalidate();
                 return true;
 
@@ -113,6 +132,37 @@ public class BoardView extends View {
         }
     }
 
+    //撤回
+    public void reCall() {
+        if (!isCanReCall || mSavePath.size() == 0) {
+            Utils.Toast("对不起，不能撤回");
+            return;
+        }
+        mDeletePath.add(mSavePath.get(mSavePath.size() - 1));
+        mSavePath.remove(mSavePath.size() - 1);
+        updateBitmap();
+    }
+
+    //绘制后一步
+    public void recover() {
+        if (!isCanReCall || mDeletePath.size() == 0) {
+            Utils.Toast("对不起，不能恢复");
+            return;
+        }
+        mSavePath.add(mDeletePath.get(mDeletePath.size() - 1));
+        mDeletePath.remove(mDeletePath.size() - 1);
+        updateBitmap();
+    }
+
+    //更新bitmap
+    public void updateBitmap() {
+        clear();
+        for (WritablePath path : mSavePath) {
+            mCanvas.drawPath(path, path.mPaint);
+        }
+    }
+
+    //清屏
     public void clear() {
         mDrawBitmap.eraseColor(Color.WHITE);
         mCanvas = new Canvas(mDrawBitmap);
@@ -120,23 +170,33 @@ public class BoardView extends View {
         invalidate();
     }
 
-    public void setWipeMode(boolean isWipe){
-        if(isWipe){
-            mShape.setPaintColor(Color.WHITE);
-            mShape.setPaintWidth(WIPE_SIZE);
-        }
+    public void setDrawPath(List<WritablePath> data){
+        mSavePath = data;
+        mDeletePath.clear();
+        updateBitmap();
+    }
+
+    //橡皮模式
+    public void setWipeMode() {
+        mShape.setPaintColor(Color.WHITE);
+        mShape.setPaintWidth(WIPE_SIZE);
+    }
+
+    public void setDrawType(int type) {
+        mDrawType = type;
     }
 
     public DrawShape getCurrentShape(){
         return mShape;
     }
 
-    public void setDrawType(int type){
-        mDrawType = type;
-    }
-
     public Bitmap getDrawBitmap(){
         return mDrawBitmap;
+    }
+
+    //只限制在笔迹模式下
+    public List<WritablePath> getNotePath() {
+        return mSavePath;
     }
 
     //创建白色背景的bitmap
@@ -151,7 +211,7 @@ public class BoardView extends View {
         return bitmap;
     }
 
-    //暴露down事件给floatviewgroup
+    //暴露down事件给FloatViewGroup
     public void setOnDownAction(OnDownAction action){
         mDownAction = action;
     }
