@@ -1,6 +1,8 @@
 package cn.lemon.whiteboard.widget.shape;
 
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 
 import java.io.Serializable;
 
@@ -12,8 +14,9 @@ public class WritablePaint extends Paint implements Serializable {
 
     public int mColor;
     public float mWidth;
+    public boolean isEraser = false;
 
-    public void loadPaint(){
+    public void loadPaint() {
         setAntiAlias(true);
         setColor(mColor);
         setStyle(Paint.Style.STROKE);
@@ -21,6 +24,11 @@ public class WritablePaint extends Paint implements Serializable {
         setDither(true);
         setStrokeJoin(Paint.Join.ROUND);
         setStrokeCap(Paint.Cap.ROUND);
+        if (isEraser) {
+            setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));
+            setAlpha(0);
+            setStrokeWidth(100);
+        }
     }
 
 }

@@ -10,10 +10,10 @@ import cn.lemon.whiteboard.widget.BoardView;
 
 public class LineShape extends DrawShape {
 
-    private int mStartX;
-    private int mStartY;
-    private int mEndX;
-    private int mEndY;
+    public int mStartX;
+    public int mStartY;
+    public int mEndX;
+    public int mEndY;
 
     public LineShape(BoardView boardView) {
         super(boardView);

@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -18,9 +19,9 @@ import cn.lemon.whiteboard.widget.shape.DrawShape;
 import cn.lemon.whiteboard.widget.shape.LineShape;
 import cn.lemon.whiteboard.widget.shape.OvalShape;
 import cn.lemon.whiteboard.widget.shape.RectShape;
+import cn.lemon.whiteboard.widget.shape.ShapeResource;
 import cn.lemon.whiteboard.widget.shape.Type;
 import cn.lemon.whiteboard.widget.shape.WipeShape;
-import cn.lemon.whiteboard.widget.shape.WritablePath;
 
 /**
  * Created by linlongxin on 2016/10/24.
@@ -39,10 +40,10 @@ public class BoardView extends View {
     private int mStartY = 0;
 
     private boolean isClearScreen = false;
-    private boolean isCanReCall = true; //是否能撤回
+    private boolean isRecentRecallOrUndo = false;
 
-    private ArrayList<WritablePath> mSavePath;
-    private ArrayList<WritablePath> mDeletePath;
+    private ArrayList<ShapeResource> mSavePath;
+    private ArrayList<ShapeResource> mDeletePath;
 
     private OnDownAction mDownAction;
 
@@ -66,7 +67,7 @@ public class BoardView extends View {
         super.onLayout(changed, left, top, right, bottom);
         int width = getMeasuredWidth();
         int height = getMeasuredHeight();
-        mDrawBitmap = createBitmap(width,height);
+        mDrawBitmap = createBitmap(width, height);
     }
 
     @Override
@@ -76,9 +77,8 @@ public class BoardView extends View {
         //绘制path到canvas
         if (mShape != null && !isClearScreen) {
             mShape.draw(canvas);
-        }else if(isClearScreen){
+        } else if (isClearScreen) {
             isClearScreen = false;
-            isCanReCall = true;
         }
 
     }
@@ -89,13 +89,13 @@ public class BoardView extends View {
         int mCurrentY = (int) event.getY();
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                if(mDownAction != null){
+                if (mDownAction != null) {
                     mDownAction.dealDownAction();
                 }
                 mStartX = (int) event.getX();
                 mStartY = (int) event.getY();
                 //曲线
-                switch (mDrawType){
+                switch (mDrawType) {
                     case Type.CURVE:
                         mShape = new CurveShape(this);
                         break;
@@ -103,15 +103,12 @@ public class BoardView extends View {
                         mShape = new WipeShape(this);
                         break;
                     case Type.RECTANGLE:
-                        isCanReCall = false;
                         mShape = new RectShape(this);
                         break;
                     case Type.OVAL:
-                        isCanReCall = false;
                         mShape = new OvalShape(this);
                         break;
                     case Type.LINE:
-                        isCanReCall = false;
                         mShape = new LineShape(this);
                         break;
                 }
@@ -123,13 +120,39 @@ public class BoardView extends View {
 
             case MotionEvent.ACTION_UP:
                 //把之前的path保存绘制到mDrawBitmap上
-                if (isCanReCall && mShape instanceof CurveShape) {
-                    mSavePath.add(((CurveShape) mShape).getPath());
+                ShapeResource resource = new ShapeResource();
+                if (mShape instanceof WipeShape) {
+                    resource.mType = Type.WIPE;
+                    resource.mCurvePath = ((CurveShape) mShape).getPath();
+                } else if (mShape instanceof CurveShape) {
+                    resource.mType = Type.CURVE;
+                    resource.mCurvePath = ((CurveShape) mShape).getPath();
+                } else if (mShape instanceof LineShape) {
+                    resource.mType = Type.LINE;
+                    resource.mStartX = ((LineShape) mShape).mStartX;
+                    resource.mStartY = ((LineShape) mShape).mStartY;
+                    resource.mEndX = ((LineShape) mShape).mEndX;
+                    resource.mEndY = ((LineShape) mShape).mEndY;
+                    resource.mPaint = mShape.getPaint();
+                } else if (mShape instanceof OvalShape) {
+                    resource.mType = Type.OVAL;
+                    resource.mStartX = ((OvalShape) mShape).mLeft;
+                    resource.mStartY = ((OvalShape) mShape).mTop;
+                    resource.mEndX = ((OvalShape) mShape).mRight;
+                    resource.mEndY = ((OvalShape) mShape).mBottom;
+                    resource.mPaint = mShape.getPaint();
+                } else if (mShape instanceof RectShape) {
+                    resource.mType = Type.RECTANGLE;
+                    resource.mStartX = ((RectShape) mShape).mLeft;
+                    resource.mStartY = ((RectShape) mShape).mTop;
+                    resource.mEndX = ((RectShape) mShape).mRight;
+                    resource.mEndY = ((RectShape) mShape).mBottom;
+                    resource.mPaint = mShape.getPaint();
                 }
+                mSavePath.add(resource);
                 invalidate();
                 mShape.draw(mCanvas);
                 return true;
-
             default:
                 return false;
         }
@@ -137,24 +160,26 @@ public class BoardView extends View {
 
     //撤回
     public void reCall() {
-        if (!isCanReCall || mSavePath.size() == 0) {
+        if (mSavePath.size() == 0) {
             Utils.Toast("对不起，不能撤回");
             return;
         }
         mDeletePath.add(mSavePath.get(mSavePath.size() - 1));
         mSavePath.remove(mSavePath.size() - 1);
         updateBitmap();
+        isRecentRecallOrUndo = true;
     }
 
     //恢复
-    public void recover() {
-        if (!isCanReCall || mDeletePath.size() == 0) {
+    public void undo() {
+        if (mDeletePath.size() == 0) {
             Utils.Toast("对不起，不能恢复");
             return;
         }
         mSavePath.add(mDeletePath.get(mDeletePath.size() - 1));
         mDeletePath.remove(mDeletePath.size() - 1);
         updateBitmap();
+        isRecentRecallOrUndo = true;
     }
 
     //更新bitmap
@@ -163,8 +188,28 @@ public class BoardView extends View {
         mCanvas = new Canvas(mDrawBitmap);
         isClearScreen = true;
         invalidate();
-        for (WritablePath path : mSavePath) {
-            mCanvas.drawPath(path, path.mPaint);
+        for (ShapeResource resource : mSavePath) {
+
+            switch (resource.mType) {
+                case Type.WIPE:
+                case Type.CURVE:
+                    mCanvas.drawPath(resource.mCurvePath, resource.mCurvePath.mPaint);
+                    break;
+                case Type.LINE:
+                    mCanvas.drawLine(resource.mStartX, resource.mStartY,
+                            resource.mEndX, resource.mEndY, resource.mPaint);
+                    break;
+                case Type.OVAL:
+                    RectF rectF = new RectF(resource.mStartX, resource.mStartY,
+                            resource.mEndX, resource.mEndY);
+                    mCanvas.drawOval(rectF, resource.mPaint);
+                    break;
+                case Type.RECTANGLE:
+                    mCanvas.drawRect(resource.mStartX, resource.mStartY,
+                            resource.mEndX, resource.mEndY, resource.mPaint);
+                    break;
+            }
+
         }
     }
 
@@ -179,46 +224,69 @@ public class BoardView extends View {
     }
 
     //从本地文件读取
-    public void setDrawPaths(List<WritablePath> data){
+    public void setDrawPaths(List<ShapeResource> data) {
         clearScreen();
         mSavePath.addAll(data);
         updateBitmapFromLocal();
+        Utils.Log("setDrawPaths : data.size() : " + data.size());
     }
 
-    public void updateBitmapFromLocal(){
-        for (WritablePath path : mSavePath) {
-            path.loadPathPointsAsQuadTo();
-            path.mPaint.loadPaint();
-            Utils.Log("paint.color : " + path.mPaint.getColor());
-            Utils.Log("paint.width : " + path.mPaint.getStrokeWidth());
-            Utils.Log("path.isEmpty() : " + path.isEmpty());
-            mCanvas.drawPath(path, path.mPaint);
+    public void updateBitmapFromLocal() {
+        for (ShapeResource resource : mSavePath) {
+            if(resource.mPaint != null){
+                resource.mPaint.loadPaint();
+                Utils.Log("paint.color : " + resource.mPaint.getColor());
+                Utils.Log("paint.width : " + resource.mPaint.getStrokeWidth());
+            }
+            switch (resource.mType) {
+                case Type.WIPE:
+                case Type.CURVE:
+                    resource.mCurvePath.loadPathPointsAsQuadTo();
+                    resource.mCurvePath.mPaint.loadPaint();
+                    mCanvas.drawPath(resource.mCurvePath, resource.mCurvePath.mPaint);
+                    break;
+                case Type.LINE:
+                    mCanvas.drawLine(resource.mStartX, resource.mStartY,
+                            resource.mEndX, resource.mEndY, resource.mPaint);
+                    break;
+                case Type.OVAL:
+                    RectF rectF = new RectF(resource.mStartX, resource.mStartY,
+                            resource.mEndX, resource.mEndY);
+                    mCanvas.drawOval(rectF, resource.mPaint);
+                    break;
+                case Type.RECTANGLE:
+                    mCanvas.drawRect(resource.mStartX, resource.mStartY,
+                            resource.mEndX, resource.mEndY, resource.mPaint);
+                    break;
+
+            }
         }
     }
 
     public void setDrawType(int type) {
+        //如果点击撤回或者恢复后重新绘制，则情况mDeletePath
+        if (isRecentRecallOrUndo) {
+            mDeletePath.clear();
+            isRecentRecallOrUndo = false;
+        }
         mDrawType = type;
     }
 
-    public DrawShape getCurrentShape(){
+    public DrawShape getCurrentShape() {
         return mShape;
     }
 
-    public Bitmap getDrawBitmap(){
+    public Bitmap getDrawBitmap() {
         return mDrawBitmap;
     }
 
-    public boolean isCanSaveNote(){
-        return isCanReCall;
-    }
-
     //只限制在笔迹模式下
-    public ArrayList<WritablePath> getNotePath() {
+    public ArrayList<ShapeResource> getNotePath() {
         return mSavePath;
     }
 
     //创建白色背景的bitmap
-    public Bitmap createBitmap(int width,int height){
+    public Bitmap createBitmap(int width, int height) {
         Paint paint = new Paint();
         paint.setColor(Color.WHITE);
         Bitmap bitmap = Bitmap.createBitmap(width,
@@ -230,11 +298,11 @@ public class BoardView extends View {
     }
 
     //暴露down事件给FloatViewGroup
-    public void setOnDownAction(OnDownAction action){
+    public void setOnDownAction(OnDownAction action) {
         mDownAction = action;
     }
 
-    public interface OnDownAction{
+    public interface OnDownAction {
         void dealDownAction();
     }
 }

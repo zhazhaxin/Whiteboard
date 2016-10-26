@@ -38,7 +38,7 @@ public class NoteActivity extends ToolbarActivity<NotePresenter> {
     public void setData(List<Note> data){
         mAdapter.clear();
         mAdapter.addAll(data);
-        mAdapter.showNoMore();
+//        mAdapter.showNoMore();
         mRecyclerView.dismissSwipeRefresh();
     }
 }

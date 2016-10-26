@@ -11,7 +11,7 @@ import cn.lemon.whiteboard.widget.BoardView;
 public class CurveShape extends DrawShape {
 
     private Rect mRect;
-    private WritablePath mPath;
+    protected WritablePath mPath;
 
     private float mStartX;
     private float mStartY;

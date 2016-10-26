@@ -13,10 +13,10 @@ import cn.lemon.whiteboard.widget.BoardView;
 public class RectShape extends DrawShape {
 
     private final String TAG = "RectShape";
-    protected int mLeft;
-    protected int mTop;
-    protected int mRight;
-    protected int mBottom;
+    public int mLeft;
+    public int mTop;
+    public int mRight;
+    public int mBottom;
     private int mConstantPointX;
     private int mConstantPointY;
     private Rect mRect;

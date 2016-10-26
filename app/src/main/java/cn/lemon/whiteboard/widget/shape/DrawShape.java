@@ -64,4 +64,10 @@ public abstract class DrawShape {
     public void setEraser(boolean isEraser){
         this.isEraser = isEraser;
     }
+
+    public WritablePaint getPaint(){
+        mPaint.mColor = mPaintColor;
+        mPaint.mWidth = mPaintWidth;
+        return mPaint;
+    }
 }

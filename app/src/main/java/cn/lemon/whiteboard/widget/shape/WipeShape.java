@@ -14,7 +14,14 @@ public class WipeShape extends CurveShape {
         super(view);
 
         mPaint.setColor(Color.WHITE);
-        mPaint.setStrokeWidth(50);
+        mPaint.setStrokeWidth(100);
         setEraser(true);
+    }
+
+    public WritablePath getPath(){
+        mPaint.mColor = Color.WHITE;
+        mPaint.mWidth = 100;
+        mPath.mPaint = mPaint;
+        return mPath;
     }
 }

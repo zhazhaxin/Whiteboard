@@ -3,7 +3,7 @@ package cn.lemon.whiteboard.module.note;
 import java.io.Serializable;
 import java.util.List;
 
-import cn.lemon.whiteboard.widget.shape.WritablePath;
+import cn.lemon.whiteboard.widget.shape.ShapeResource;
 
 
 /**
@@ -15,5 +15,5 @@ public class Note implements Serializable{
     public String mFileName;
     public String mTitle;
     public long mCreateTime;
-    public List<WritablePath> mPaths;
+    public List<ShapeResource> mPaths;
 }

@@ -9,13 +9,9 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.LinearLayout;
 
 import cn.alien95.util.Utils;
 import cn.lemon.common.base.ToolbarActivity;
@@ -28,6 +24,7 @@ import cn.lemon.whiteboard.module.note.NoteActivity;
 import cn.lemon.whiteboard.widget.BoardView;
 import cn.lemon.whiteboard.widget.FloatAdapter;
 import cn.lemon.whiteboard.widget.FloatViewGroup;
+import cn.lemon.whiteboard.widget.InputDialog;
 
 import static cn.lemon.whiteboard.R.id.note;
 
@@ -62,7 +59,7 @@ public class MainActivity extends ToolbarActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        mAdapter = new FunctionAdapter(this,mBoardView);
+        mAdapter = new FunctionAdapter(this, mBoardView);
         mFloatViews.setAdapter(mAdapter);
         mBoardView.setOnDownAction(new BoardView.OnDownAction() {
             @Override
@@ -99,11 +96,7 @@ public class MainActivity extends ToolbarActivity
                 CurveModel.getInstance().saveCurve(mBoardView.getDrawBitmap());
                 break;
             case R.id.save_note:
-                if(mBoardView.isCanSaveNote()){
-                    showNoteDialog();
-                }else {
-                    Utils.Toast("不能保存");
-                }
+                showNoteDialog();
                 break;
             case R.id.color:
                 mBoardView.getCurrentShape().setPaintColor(Color.BLUE);
@@ -115,7 +108,7 @@ public class MainActivity extends ToolbarActivity
                 mBoardView.reCall();
                 break;
             case R.id.recover:
-                mBoardView.recover();
+                mBoardView.undo();
                 break;
         }
         return true;
@@ -143,66 +136,55 @@ public class MainActivity extends ToolbarActivity
     //保存笔迹
     public void showNoteDialog() {
 
-        final EditText inputContent = new EditText(this);
-        final LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT - Utils.dip2px(32), ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.setMargins(Utils.dip2px(16), 0, Utils.dip2px(16), 0);
-        inputContent.setLayoutParams(params);
+        final InputDialog noteDialog = new InputDialog(this);
+        noteDialog.setTitle("请输入标题");
+        noteDialog.setHint("标题");
         if (mNote != null) {
-            inputContent.setText(mNote.mTitle);
+            noteDialog.setContent(mNote.mTitle);
         }
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        final AlertDialog inputDialog = builder.create();
-        builder.setTitle("请输入标题")
-                .setView(inputContent)
-                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (TextUtils.isEmpty(inputContent.getText())) {
-                            Utils.Toast("标题不能为空");
-                            return;
-                        }
-                        Note note = new Note();
-                        note.mTitle = inputContent.getText().toString();
-                        note.mPaths = mBoardView.getNotePath();
-                        long time = System.currentTimeMillis();
-                        note.mCreateTime = time;
-                        note.mFileName = time + "";
-                        NoteModel.getInstance().saveNote(note);
-                        if (mNote != null) {
-                            NoteModel.getInstance().deleteNoteFile(mNote.mFileName);
-                            mNote = null;
-                        }
-                        inputDialog.dismiss();
-                        Utils.Toast("保存成功");
-                        mBoardView.clearScreen();
-                    }
-                })
-                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        inputDialog.dismiss();
-                    }
-                }).show();
+        noteDialog.show();
+        noteDialog.setPositiveClickListener(new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (TextUtils.isEmpty(noteDialog.getContent())) {
+                    Utils.Toast("标题不能为空");
+                    return;
+                }
+                Note note = new Note();
+                note.mTitle = noteDialog.getContent().toString();
+                note.mPaths = mBoardView.getNotePath();
+                long time = System.currentTimeMillis();
+                note.mCreateTime = time;
+                note.mFileName = time + "";
+                NoteModel.getInstance().saveNote(note);
+                if (mNote != null) {
+                    NoteModel.getInstance().deleteNoteFile(mNote.mFileName);
+                    mNote = null;
+                }
+                noteDialog.dismiss();
+                Utils.Toast("保存成功");
+                mBoardView.clearScreen();
+            }
+        });
 
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == Config.NOTE_REQUEST_CODE && resultCode == Config.NOTE_RESULT_CODE){
+        if (requestCode == Config.NOTE_REQUEST_CODE && resultCode == Config.NOTE_RESULT_CODE) {
             mNote = (Note) data.getSerializableExtra(Config.NOTE_DATA);
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
                     mBoardView.setDrawPaths(mNote.mPaths);
-                    Utils.Log("paths.size() :　" + mNote.mPaths.size());
                 }
             });
 
         }
     }
 
-    public void setNoteNull(){
+    public void setNoteNull() {
         mNote = null;
     }
 }

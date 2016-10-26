@@ -46,10 +46,11 @@ public class InputDialog extends AppCompatDialog {
         mTitle = (TextView) dialogContent.findViewById(R.id.title);
         mInputContent = (EditText) dialogContent.findViewById(R.id.input_content);
         mPassiveText = (TextView) dialogContent.findViewById(R.id.passive_button);
-        mPositiveText = (TextView) dialogContent.findViewById(R.id.passive_button);
+        mPositiveText = (TextView) dialogContent.findViewById(R.id.positive_button);
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(dialogContent,
                 new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        setPassiveClickListener(null);
     }
 
     /**
@@ -81,8 +82,20 @@ public class InputDialog extends AppCompatDialog {
         });
     }
 
-    public String getInputContent(){
+    public String getContent(){
         return mInputContent.getText().toString();
+    }
+
+    public void setTitle(String content){
+        mTitle.setText(content);
+    }
+
+    public void setHint(String content){
+        mInputContent.setHint(content);
+    }
+
+    public void setContent(String content){
+        mInputContent.setText(content);
     }
 
     public String getTitle(){
