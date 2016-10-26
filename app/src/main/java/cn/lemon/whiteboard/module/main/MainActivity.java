@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -27,6 +28,8 @@ import cn.lemon.whiteboard.widget.BoardView;
 import cn.lemon.whiteboard.widget.FloatAdapter;
 import cn.lemon.whiteboard.widget.FloatViewGroup;
 
+import static cn.lemon.whiteboard.R.id.note;
+
 public class MainActivity extends ToolbarActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -34,6 +37,8 @@ public class MainActivity extends ToolbarActivity
     private FloatViewGroup mFloatViews;
     private FloatAdapter mAdapter;
     private long mFirstPressBackTime = 0;
+    private Handler mHandler;
+    private Note mNote;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +46,8 @@ public class MainActivity extends ToolbarActivity
         super.onCreate(savedInstanceState);
         setToolbarHomeBack(false);
         setContentView(R.layout.main_activity);
+
+        mHandler = new Handler(getMainLooper());
 
         mFloatViews = (FloatViewGroup) findViewById(R.id.float_view_group);
         mBoardView = (BoardView) findViewById(R.id.board_view);
@@ -62,36 +69,6 @@ public class MainActivity extends ToolbarActivity
                 mFloatViews.checkShrinkViews();
             }
         });
-    }
-
-    @Override
-    protected void onStart() {
-        Utils.Log("onStart");
-        super.onStart();
-    }
-
-    @Override
-    protected void onResume() {
-        Utils.Log("onResume");
-        super.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        Utils.Log("onPause");
-        super.onPause();
-    }
-
-    @Override
-    protected void onStop() {
-        Utils.Log("onStop");
-        super.onStop();
-    }
-
-    @Override
-    protected void onDestroy() {
-        Utils.Log("onDestroy");
-        super.onDestroy();
     }
 
     @Override
@@ -146,7 +123,7 @@ public class MainActivity extends ToolbarActivity
 
         if (id == R.id.draw_board) {
 
-        } else if (id == R.id.note) {
+        } else if (id == note) {
             Intent intent = new Intent(new Intent(this, NoteActivity.class));
             startActivityForResult(intent, Config.NOTE_REQUEST_CODE);
         } else if (id == R.id.about) {
@@ -162,7 +139,7 @@ public class MainActivity extends ToolbarActivity
     public void showNoteDialog() {
 
         final EditText inputContent = new EditText(this);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT - Utils.dip2px(32), ViewGroup.LayoutParams.WRAP_CONTENT);
+        final LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT - Utils.dip2px(32), ViewGroup.LayoutParams.WRAP_CONTENT);
         params.setMargins(Utils.dip2px(16), 0, Utils.dip2px(16), 0);
         inputContent.setLayoutParams(params);
 
@@ -181,7 +158,9 @@ public class MainActivity extends ToolbarActivity
                             note.createTime = System.currentTimeMillis();
                             note.paths = mBoardView.getNotePath();
                             CurveModel.getInstance().saveNote(note);
+                            mBoardView.clear();
                             inputDialog.dismiss();
+                            Utils.Toast("保存成功");
                         }
                     }
                 })
@@ -198,9 +177,15 @@ public class MainActivity extends ToolbarActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == Config.NOTE_REQUEST_CODE && resultCode == Config.NOTE_RESULT_CODE){
-            Note note = (Note) data.getSerializableExtra(Config.NOTE_DATA);
-            mBoardView.setDrawPath(note.paths);
-            Utils.Log("paths.size() :　" + note.paths.size());
+            mNote = (Note) data.getSerializableExtra(Config.NOTE_DATA);
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    mBoardView.setDrawPaths(mNote.paths);
+                    Utils.Log("paths.size() :　" + mNote.paths.size());
+                }
+            });
+
         }
     }
 }

@@ -19,7 +19,6 @@ public class CurveShape extends DrawShape {
     public CurveShape(BoardView view) {
         super(view);
         mPath = new WritablePath();
-        mPath.mPaint = mPaint;
         mRect = new Rect();
     }
 
@@ -29,6 +28,8 @@ public class CurveShape extends DrawShape {
             mStartY = startY;
             //设置曲线开始点
             mPath.moveTo(mStartX, mStartY);
+            float[] a = {mStartX,mStartY,0,0};
+            mPath.addPathPoints(a);
         }
 
         int border = (int) mPaint.getStrokeWidth();
@@ -40,6 +41,9 @@ public class CurveShape extends DrawShape {
 
         // 贝赛尔曲线
         mPath.quadTo(mStartX, mStartY, mMiddleX, mMiddleY);
+
+        float[] temp = {mStartX, mStartY, mMiddleX, mMiddleY};
+        mPath.addPathPoints(temp);
 
         //重新计算Rect的范围
         mRect.union((int) mMiddleX - border,
@@ -60,6 +64,9 @@ public class CurveShape extends DrawShape {
     }
 
     public WritablePath getPath(){
+        mPaint.mColor = getPaintColor();
+        mPaint.mWidth = getPaintWidth();
+        mPath.mPaint = mPaint;
         return mPath;
     }
 

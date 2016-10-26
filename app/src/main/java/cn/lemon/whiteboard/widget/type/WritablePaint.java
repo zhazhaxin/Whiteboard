@@ -10,4 +10,17 @@ import java.io.Serializable;
 
 public class WritablePaint extends Paint implements Serializable {
 
+    public int mColor;
+    public float mWidth;
+
+    public void loadPaint(){
+        setAntiAlias(true);
+        setColor(mColor);
+        setStyle(Paint.Style.STROKE);
+        setStrokeWidth(mWidth);
+        setDither(true);
+        setStrokeJoin(Paint.Join.ROUND);
+        setStrokeCap(Paint.Cap.ROUND);
+    }
+
 }

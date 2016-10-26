@@ -57,6 +57,10 @@ public abstract class DrawShape {
         mPaint.setStrokeWidth(width);
     }
 
+    public static float getPaintWidth() {
+        return mPaintWidth;
+    }
+
     public void setEraser(boolean isEraser){
         this.isEraser = isEraser;
     }

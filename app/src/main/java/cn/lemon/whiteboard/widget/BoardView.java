@@ -41,8 +41,8 @@ public class BoardView extends View {
     private boolean isClear = false;
     private boolean isCanReCall = true; //是否能撤回
 
-    private List<WritablePath> mSavePath;
-    private List<WritablePath> mDeletePath;
+    private ArrayList<WritablePath> mSavePath;
+    private ArrayList<WritablePath> mDeletePath;
 
     private OnDownAction mDownAction;
 
@@ -122,11 +122,11 @@ public class BoardView extends View {
 
             case MotionEvent.ACTION_UP:
                 //把之前的path保存绘制到mDrawBitmap上
-                invalidate();
-                mShape.draw(mCanvas);
                 if (isCanReCall && mShape instanceof CurveShape) {
                     mSavePath.add(((CurveShape) mShape).getPath());
                 }
+                invalidate();
+                mShape.draw(mCanvas);
                 return true;
 
             default:
@@ -172,11 +172,24 @@ public class BoardView extends View {
         invalidate();
     }
 
-    public void setDrawPath(List<WritablePath> data){
+    //从本地文件读取
+    public void setDrawPaths(List<WritablePath> data){
         mSavePath.clear();
         mDeletePath.clear();
         mSavePath.addAll(data);
-        updateBitmap();
+        updateBitmapFromLocal();
+    }
+
+    public void updateBitmapFromLocal(){
+        clear();
+        for (WritablePath path : mSavePath) {
+            path.loadPathPointsAsQuadTo();
+            path.mPaint.loadPaint();
+            Utils.Log("paint.color : " + path.mPaint.getColor());
+            Utils.Log("paint.width : " + path.mPaint.getStrokeWidth());
+            Utils.Log("path.isEmpty() : " + path.isEmpty());
+            mCanvas.drawPath(path, path.mPaint);
+        }
     }
 
     public void setDrawType(int type) {
@@ -192,7 +205,7 @@ public class BoardView extends View {
     }
 
     //只限制在笔迹模式下
-    public List<WritablePath> getNotePath() {
+    public ArrayList<WritablePath> getNotePath() {
         return mSavePath;
     }
 

@@ -62,9 +62,7 @@ public class NoteModel extends SuperModel {
             Object result = ois.readObject();
             ois.close();
             return result;
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
             Log.i("SuperModel", "对象缓存读取失败");
         }

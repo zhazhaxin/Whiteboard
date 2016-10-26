@@ -15,7 +15,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import cn.alien95.util.AsyncThreadPool;
-import cn.alien95.util.ImageUtil;
 import cn.alien95.util.Utils;
 import cn.lemon.common.base.model.SuperModel;
 import cn.lemon.whiteboard.module.note.Note;
@@ -33,7 +32,6 @@ public class CurveModel extends SuperModel {
     private Handler mHandler;
 
     public CurveModel() {
-//        mRootDir = new File(getContext().getCacheDir(), IMG_DIR);
         mRootDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), IMG_DIR);
         if (!mRootDir.exists()) {
             mRootDir.mkdir();
@@ -46,15 +44,14 @@ public class CurveModel extends SuperModel {
     }
 
     public void saveCurve(final Bitmap target){
-        if (target == null) {
-            Utils.Log("bitmap == null");
+        if (target.getByteCount() == 0) {
+            Utils.Toast("bitmap is empty");
             return;
         }
         AsyncThreadPool.getInstance().executeRunnable(new Runnable() {
             @Override
             public void run() {
                 File image = new File(mRootDir, IMAGE_HEADER + System.currentTimeMillis() + ".png");
-                ImageUtil.saveBitmap(target, image);
                 try {
                     FileOutputStream out = new FileOutputStream(image);
                     target.compress(Bitmap.CompressFormat.PNG, 100, out);
@@ -62,14 +59,12 @@ public class CurveModel extends SuperModel {
                     out.close();
                     // 最后通知图库更新
                     getContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + image.getAbsolutePath())));
-
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
                             Utils.Toast("保存成功");
                         }
                     });
-
                     Utils.Log("图片地址 ：" + image.getAbsolutePath());
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
@@ -81,7 +76,7 @@ public class CurveModel extends SuperModel {
     }
 
     public void saveNote(Note note) {
-        putObject(MD5(System.currentTimeMillis() + ".0"), note);
+        putObject(System.currentTimeMillis() + "", note);
     }
 
     /**
