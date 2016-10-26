@@ -77,7 +77,7 @@ public class FloatViewGroup extends ViewGroup implements View.OnClickListener {
 
     //打开
     public void expandViews() {
-        ObjectAnimator.ofFloat(mSwitchView, "rotation", 0f, 90f + 45f).setDuration(CHANGE_TIME).start();
+        ObjectAnimator.ofFloat(mSwitchView, "rotation", 0f, 45f).setDuration(CHANGE_TIME).start();
         for (int i = 0; i < mItemCount; i++) {
             float curTranslationY = mItems[i].getTranslationY();
             animator = ObjectAnimator.ofFloat(mItems[i], "translationY", curTranslationY, -(i + 1) * mItems[i].getMeasuredHeight());
@@ -96,7 +96,7 @@ public class FloatViewGroup extends ViewGroup implements View.OnClickListener {
 
     //关闭
     public void shrinkViews() {
-        ObjectAnimator.ofFloat(mSwitchView, "rotation", 90f + 45f, 0f).setDuration(CHANGE_TIME).start();
+        ObjectAnimator.ofFloat(mSwitchView, "rotation", 45f, 0f).setDuration(CHANGE_TIME).start();
         for (int i = 0; i < mItemCount; i++) {
             float curTranslationY = mItems[i].getTranslationY();
             animator = ObjectAnimator.ofFloat(mItems[i], "translationY", curTranslationY, 0f);

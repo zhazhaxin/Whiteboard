@@ -4,7 +4,8 @@
     android:orientation="horizontal"
     android:clickable="true"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:paddingRight="4dp">
 
     <TextView android:id="@+id/hint"
         android:layout_width="wrap_content"

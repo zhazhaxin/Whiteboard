@@ -37,6 +37,7 @@ public class MainActivity extends ToolbarActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Utils.Log("onCreate");
         super.onCreate(savedInstanceState);
         setToolbarHomeBack(false);
         setContentView(R.layout.main_activity);
@@ -61,6 +62,36 @@ public class MainActivity extends ToolbarActivity
                 mFloatViews.checkShrinkViews();
             }
         });
+    }
+
+    @Override
+    protected void onStart() {
+        Utils.Log("onStart");
+        super.onStart();
+    }
+
+    @Override
+    protected void onResume() {
+        Utils.Log("onResume");
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        Utils.Log("onPause");
+        super.onPause();
+    }
+
+    @Override
+    protected void onStop() {
+        Utils.Log("onStop");
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        Utils.Log("onDestroy");
+        super.onDestroy();
     }
 
     @Override
@@ -127,7 +158,7 @@ public class MainActivity extends ToolbarActivity
         return true;
     }
 
-
+    //保存笔迹
     public void showNoteDialog() {
 
         final EditText inputContent = new EditText(this);
@@ -169,6 +200,7 @@ public class MainActivity extends ToolbarActivity
         if(requestCode == Config.NOTE_REQUEST_CODE && resultCode == Config.NOTE_RESULT_CODE){
             Note note = (Note) data.getSerializableExtra(Config.NOTE_DATA);
             mBoardView.setDrawPath(note.paths);
+            Utils.Log("paths.size() :　" + note.paths.size());
         }
     }
 }

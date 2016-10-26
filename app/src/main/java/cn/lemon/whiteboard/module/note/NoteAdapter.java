@@ -59,8 +59,10 @@ public class NoteAdapter extends RecyclerAdapter<Note> {
         @Override
         public void setData(Note object) {
             super.setData(object);
-            mTitle.setText(object.title);
-            mTime.setText(TimeTransform.getRecentlyDate(object.createTime));
+            if(object != null){
+                mTitle.setText(object.title);
+                mTime.setText(TimeTransform.getRecentlyDate(object.createTime));
+            }
         }
     }
 }

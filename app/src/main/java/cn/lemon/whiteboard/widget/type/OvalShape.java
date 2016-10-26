@@ -12,8 +12,6 @@ import cn.lemon.whiteboard.widget.BoardView;
 
 public class OvalShape extends RectShape {
 
-
-
     public OvalShape(BoardView boardView) {
         super(boardView);
     }

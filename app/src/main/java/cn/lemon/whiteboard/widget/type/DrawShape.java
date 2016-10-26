@@ -14,8 +14,10 @@ public abstract class DrawShape {
 
     protected BoardView mDrawView;
     protected WritablePaint mPaint;
-    protected static int mPaintColor = Color.BLACK;
-    protected static float mPaintWidth = 4f;
+    private boolean isEraser = false; //是否是橡皮
+
+    private static int mPaintColor = Color.BLACK;
+    private static float mPaintWidth = 4f;
 
     public DrawShape(BoardView boardView) {
         //注入BoardView对象
@@ -30,22 +32,32 @@ public abstract class DrawShape {
         mPaint.setStrokeCap(Paint.Cap.ROUND);
     }
 
-    public void setPaintColor(int color) {
-        mPaintColor = color;
-        mPaint.setColor(color);
-    }
-
-    public int getPaintColor(){
-        return mPaintColor;
-    }
-
-    public void setPaintWidth(float width) {
-        mPaintWidth = width;
-        mPaint.setStrokeWidth(width);
-    }
-
     public abstract void touchMove(int startX, int startY, int currentX, int currentY);
 
     public abstract void draw(Canvas canvas);
 
+    public void setPaintColor(int color) {
+        if(isEraser){
+            return;
+        }
+        mPaintColor = color;
+        mPaint.setColor(color);
+
+    }
+
+    public int getPaintColor() {
+        return mPaintColor;
+    }
+
+    public void setPaintWidth(float width) {
+        if(isEraser){
+            return;
+        }
+        mPaintWidth = width;
+        mPaint.setStrokeWidth(width);
+    }
+
+    public void setEraser(boolean isEraser){
+        this.isEraser = isEraser;
+    }
 }

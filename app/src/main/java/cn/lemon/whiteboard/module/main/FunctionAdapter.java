@@ -47,7 +47,7 @@ class FunctionAdapter extends FloatAdapter {
                 mBoardView.clear();
                 break;
             case 1:
-                mBoardView.setWipeMode();
+                mBoardView.setDrawType(Type.WIPE);
                 break;
             case 2:
                 mBoardView.setDrawType(Type.RECTANGLE);

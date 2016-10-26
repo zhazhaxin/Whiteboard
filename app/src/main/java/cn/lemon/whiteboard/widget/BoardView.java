@@ -19,6 +19,7 @@ import cn.lemon.whiteboard.widget.type.LineShape;
 import cn.lemon.whiteboard.widget.type.OvalShape;
 import cn.lemon.whiteboard.widget.type.RectShape;
 import cn.lemon.whiteboard.widget.type.Type;
+import cn.lemon.whiteboard.widget.type.WipeShape;
 import cn.lemon.whiteboard.widget.type.WritablePath;
 
 /**
@@ -36,8 +37,6 @@ public class BoardView extends View {
 
     private int mStartX = 0;
     private int mStartY = 0;
-
-    private final float WIPE_SIZE = 50f;
 
     private boolean isClear = false;
     private boolean isCanReCall = true; //是否能撤回
@@ -99,6 +98,9 @@ public class BoardView extends View {
                     case Type.CURVE:
                         mShape = new CurveShape(this);
                         break;
+                    case Type.WIPE:
+                        mShape = new WipeShape(this);
+                        break;
                     case Type.RECTANGLE:
                         isCanReCall = false;
                         mShape = new RectShape(this);
@@ -120,11 +122,11 @@ public class BoardView extends View {
 
             case MotionEvent.ACTION_UP:
                 //把之前的path保存绘制到mDrawBitmap上
+                invalidate();
                 mShape.draw(mCanvas);
                 if (isCanReCall && mShape instanceof CurveShape) {
                     mSavePath.add(((CurveShape) mShape).getPath());
                 }
-                invalidate();
                 return true;
 
             default:
@@ -171,15 +173,10 @@ public class BoardView extends View {
     }
 
     public void setDrawPath(List<WritablePath> data){
-        mSavePath = data;
+        mSavePath.clear();
         mDeletePath.clear();
+        mSavePath.addAll(data);
         updateBitmap();
-    }
-
-    //橡皮模式
-    public void setWipeMode() {
-        mShape.setPaintColor(Color.WHITE);
-        mShape.setPaintWidth(WIPE_SIZE);
     }
 
     public void setDrawType(int type) {

@@ -8,13 +8,4 @@ public class WritablePath extends Path implements Serializable
 {
     public WritablePaint mPaint;
 
-    public WritablePath()
-    {
-        super();
-    }
-
-    public WritablePath(WritablePaint mPaint) {
-        super();
-        this.mPaint = mPaint;
-    }
 }

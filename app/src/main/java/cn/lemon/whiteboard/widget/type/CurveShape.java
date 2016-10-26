@@ -18,7 +18,8 @@ public class CurveShape extends DrawShape {
 
     public CurveShape(BoardView view) {
         super(view);
-        mPath = new WritablePath(mPaint);
+        mPath = new WritablePath();
+        mPath.mPaint = mPaint;
         mRect = new Rect();
     }
 

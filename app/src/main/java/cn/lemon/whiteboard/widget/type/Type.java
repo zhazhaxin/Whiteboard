@@ -10,4 +10,5 @@ public interface Type {
     int RECTANGLE = 124;
     int OVAL = 125;
     int LINE = 126;
+    int WIPE = 127;
 }
