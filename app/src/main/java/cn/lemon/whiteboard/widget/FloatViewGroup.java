@@ -9,9 +9,6 @@ import android.view.ViewGroup;
 import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
 
-/**
- * Created by alien on 2015/6/15.
- */
 public class FloatViewGroup extends ViewGroup implements View.OnClickListener {
     private FloatAdapter adapter;
     private ObjectAnimator animator;

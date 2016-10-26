@@ -99,7 +99,11 @@ public class MainActivity extends ToolbarActivity
                 CurveModel.getInstance().saveCurve(mBoardView.getDrawBitmap());
                 break;
             case R.id.save_note:
-                showNoteDialog();
+                if(mBoardView.isCanSaveNote()){
+                    showNoteDialog();
+                }else {
+                    Utils.Toast("不能保存");
+                }
                 break;
             case R.id.color:
                 mBoardView.getCurrentShape().setPaintColor(Color.BLUE);
@@ -196,5 +200,9 @@ public class MainActivity extends ToolbarActivity
             });
 
         }
+    }
+
+    public void setNoteNull(){
+        mNote = null;
     }
 }

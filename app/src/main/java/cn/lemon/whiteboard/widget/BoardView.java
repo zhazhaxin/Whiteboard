@@ -38,7 +38,7 @@ public class BoardView extends View {
     private int mStartX = 0;
     private int mStartY = 0;
 
-    private boolean isClear = false;
+    private boolean isClearScreen = false;
     private boolean isCanReCall = true; //是否能撤回
 
     private ArrayList<WritablePath> mSavePath;
@@ -71,15 +71,16 @@ public class BoardView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        //绘制到mDrawBitmap
+        //canvas绘制到mDrawBitmap
         canvas.drawBitmap(mDrawBitmap, 0, 0, mPaint);
-        //同步绘制到BoardView自己的画布上
-        if (mShape != null && !isClear) {
+        //绘制path到canvas
+        if (mShape != null && !isClearScreen) {
             mShape.draw(canvas);
-        }else if(isClear){
-            isClear = false;
+        }else if(isClearScreen){
+            isClearScreen = false;
             isCanReCall = true;
         }
+
     }
 
     @Override
@@ -125,6 +126,7 @@ public class BoardView extends View {
                 if (isCanReCall && mShape instanceof CurveShape) {
                     mSavePath.add(((CurveShape) mShape).getPath());
                 }
+                invalidate();
                 mShape.draw(mCanvas);
                 return true;
 
@@ -144,7 +146,7 @@ public class BoardView extends View {
         updateBitmap();
     }
 
-    //绘制后一步
+    //恢复
     public void recover() {
         if (!isCanReCall || mDeletePath.size() == 0) {
             Utils.Toast("对不起，不能恢复");
@@ -157,7 +159,10 @@ public class BoardView extends View {
 
     //更新bitmap
     public void updateBitmap() {
-        clearScreen();
+        mDrawBitmap.eraseColor(Color.WHITE);
+        mCanvas = new Canvas(mDrawBitmap);
+        isClearScreen = true;
+        invalidate();
         for (WritablePath path : mSavePath) {
             mCanvas.drawPath(path, path.mPaint);
         }
@@ -169,7 +174,7 @@ public class BoardView extends View {
         mCanvas = new Canvas(mDrawBitmap);
         mSavePath.clear();
         mDeletePath.clear();
-        isClear = true;
+        isClearScreen = true;
         invalidate();
     }
 
@@ -201,6 +206,10 @@ public class BoardView extends View {
 
     public Bitmap getDrawBitmap(){
         return mDrawBitmap;
+    }
+
+    public boolean isCanSaveNote(){
+        return isCanReCall;
     }
 
     //只限制在笔迹模式下

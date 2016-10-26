@@ -45,6 +45,9 @@ class FunctionAdapter extends FloatAdapter {
         switch (position){
             case 0:
                 mBoardView.clearScreen();
+                if(getContext() instanceof MainActivity){
+                    ((MainActivity) getContext()).setNoteNull();
+                }
                 break;
             case 1:
                 mBoardView.setDrawType(Type.WIPE);

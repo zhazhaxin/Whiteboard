@@ -11,9 +11,6 @@ import cn.alien95.util.Utils;
 import cn.lemon.whiteboard.R;
 
 
-/**
- * Created by alien on 2015/6/15.
- */
 public abstract class FloatAdapter {
 
     private Context mContext;
@@ -51,6 +48,10 @@ public abstract class FloatAdapter {
         switchView.setLayoutParams(new ViewGroup.LayoutParams(Utils.dip2px(56),Utils.dip2px(56)));
         switchView.setImageResource(getMainResource());
         return switchView;
+    }
+
+    public Context getContext(){
+        return mContext;
     }
 
     public abstract int getCount();
