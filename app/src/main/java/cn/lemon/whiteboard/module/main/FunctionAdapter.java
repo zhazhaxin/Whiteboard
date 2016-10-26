@@ -5,7 +5,7 @@ import android.content.Context;
 import cn.lemon.whiteboard.R;
 import cn.lemon.whiteboard.widget.BoardView;
 import cn.lemon.whiteboard.widget.FloatAdapter;
-import cn.lemon.whiteboard.widget.type.Type;
+import cn.lemon.whiteboard.widget.shape.Type;
 
 class FunctionAdapter extends FloatAdapter {
 
@@ -44,7 +44,7 @@ class FunctionAdapter extends FloatAdapter {
     public void onItemClick(int position) {
         switch (position){
             case 0:
-                mBoardView.clear();
+                mBoardView.clearScreen();
                 break;
             case 1:
                 mBoardView.setDrawType(Type.WIPE);

@@ -239,11 +239,12 @@ public abstract class RecyclerAdapter<T> extends RecyclerView.Adapter<BaseViewHo
             return;
         }
         isLoadingMore = false;
+        int position = mData.indexOf(object);
         mData.remove(object);
         if (hasHeader) {
-            notifyItemRemoved(mData.indexOf(object) + 1);
+            notifyItemRemoved(position + 1);
         } else {
-            notifyItemRemoved(mData.indexOf(object));
+            notifyItemRemoved(position);
         }
         mViewCount--;
     }

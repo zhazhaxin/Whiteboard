@@ -32,6 +32,30 @@ public class NoteModel extends SuperModel {
         return getInstance(NoteModel.class);
     }
 
+    public void saveNote(Note note) {
+        putObject(note.mFileName, note);
+    }
+
+    public void deleteNoteFile(final String fileName){
+        AsyncThreadPool.getInstance().executeRunnable(new Runnable() {
+            @Override
+            public void run() {
+                File cacheDir = new File(getObjectCacheDir());
+                if (!cacheDir.exists()) {
+                    Utils.Toast("缓存目录不存在");
+                } else {
+                    File[] files = cacheDir.listFiles();
+                    for (File f : files) {
+                        if(f.getName().equals(fileName)){
+                            f.delete();
+                            return;
+                        }
+                    }
+                }
+            }
+        });
+    }
+
     public void getNoteList(final Callback callback) {
         AsyncThreadPool.getInstance().executeRunnable(new Runnable() {
             @Override

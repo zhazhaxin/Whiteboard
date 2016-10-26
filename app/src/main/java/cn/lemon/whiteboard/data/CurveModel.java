@@ -17,7 +17,6 @@ import java.security.NoSuchAlgorithmException;
 import cn.alien95.util.AsyncThreadPool;
 import cn.alien95.util.Utils;
 import cn.lemon.common.base.model.SuperModel;
-import cn.lemon.whiteboard.module.note.Note;
 
 /**
  * Created by user on 2016/10/24.
@@ -73,10 +72,6 @@ public class CurveModel extends SuperModel {
                 }
             }
         });
-    }
-
-    public void saveNote(Note note) {
-        putObject(System.currentTimeMillis() + "", note);
     }
 
     /**

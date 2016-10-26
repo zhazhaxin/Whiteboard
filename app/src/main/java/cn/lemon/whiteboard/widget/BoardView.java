@@ -13,14 +13,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.alien95.util.Utils;
-import cn.lemon.whiteboard.widget.type.CurveShape;
-import cn.lemon.whiteboard.widget.type.DrawShape;
-import cn.lemon.whiteboard.widget.type.LineShape;
-import cn.lemon.whiteboard.widget.type.OvalShape;
-import cn.lemon.whiteboard.widget.type.RectShape;
-import cn.lemon.whiteboard.widget.type.Type;
-import cn.lemon.whiteboard.widget.type.WipeShape;
-import cn.lemon.whiteboard.widget.type.WritablePath;
+import cn.lemon.whiteboard.widget.shape.CurveShape;
+import cn.lemon.whiteboard.widget.shape.DrawShape;
+import cn.lemon.whiteboard.widget.shape.LineShape;
+import cn.lemon.whiteboard.widget.shape.OvalShape;
+import cn.lemon.whiteboard.widget.shape.RectShape;
+import cn.lemon.whiteboard.widget.shape.Type;
+import cn.lemon.whiteboard.widget.shape.WipeShape;
+import cn.lemon.whiteboard.widget.shape.WritablePath;
 
 /**
  * Created by linlongxin on 2016/10/24.
@@ -125,7 +125,6 @@ public class BoardView extends View {
                 if (isCanReCall && mShape instanceof CurveShape) {
                     mSavePath.add(((CurveShape) mShape).getPath());
                 }
-                invalidate();
                 mShape.draw(mCanvas);
                 return true;
 
@@ -158,30 +157,30 @@ public class BoardView extends View {
 
     //更新bitmap
     public void updateBitmap() {
-        clear();
+        clearScreen();
         for (WritablePath path : mSavePath) {
             mCanvas.drawPath(path, path.mPaint);
         }
     }
 
     //清屏
-    public void clear() {
+    public void clearScreen() {
         mDrawBitmap.eraseColor(Color.WHITE);
         mCanvas = new Canvas(mDrawBitmap);
+        mSavePath.clear();
+        mDeletePath.clear();
         isClear = true;
         invalidate();
     }
 
     //从本地文件读取
     public void setDrawPaths(List<WritablePath> data){
-        mSavePath.clear();
-        mDeletePath.clear();
+        clearScreen();
         mSavePath.addAll(data);
         updateBitmapFromLocal();
     }
 
     public void updateBitmapFromLocal(){
-        clear();
         for (WritablePath path : mSavePath) {
             path.loadPathPointsAsQuadTo();
             path.mPaint.loadPaint();

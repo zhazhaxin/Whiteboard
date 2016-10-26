@@ -22,6 +22,7 @@ import cn.lemon.common.base.ToolbarActivity;
 import cn.lemon.whiteboard.R;
 import cn.lemon.whiteboard.app.Config;
 import cn.lemon.whiteboard.data.CurveModel;
+import cn.lemon.whiteboard.data.NoteModel;
 import cn.lemon.whiteboard.module.note.Note;
 import cn.lemon.whiteboard.module.note.NoteActivity;
 import cn.lemon.whiteboard.widget.BoardView;
@@ -142,7 +143,9 @@ public class MainActivity extends ToolbarActivity
         final LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT - Utils.dip2px(32), ViewGroup.LayoutParams.WRAP_CONTENT);
         params.setMargins(Utils.dip2px(16), 0, Utils.dip2px(16), 0);
         inputContent.setLayoutParams(params);
-
+        if (mNote != null) {
+            inputContent.setText(mNote.mTitle);
+        }
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         final AlertDialog inputDialog = builder.create();
         builder.setTitle("请输入标题")
@@ -152,16 +155,22 @@ public class MainActivity extends ToolbarActivity
                     public void onClick(DialogInterface dialog, int which) {
                         if (TextUtils.isEmpty(inputContent.getText())) {
                             Utils.Toast("标题不能为空");
-                        } else {
-                            Note note = new Note();
-                            note.title = inputContent.getText().toString();
-                            note.createTime = System.currentTimeMillis();
-                            note.paths = mBoardView.getNotePath();
-                            CurveModel.getInstance().saveNote(note);
-                            mBoardView.clear();
-                            inputDialog.dismiss();
-                            Utils.Toast("保存成功");
+                            return;
                         }
+                        Note note = new Note();
+                        note.mTitle = inputContent.getText().toString();
+                        note.mPaths = mBoardView.getNotePath();
+                        long time = System.currentTimeMillis();
+                        note.mCreateTime = time;
+                        note.mFileName = time + "";
+                        NoteModel.getInstance().saveNote(note);
+                        if (mNote != null) {
+                            NoteModel.getInstance().deleteNoteFile(mNote.mFileName);
+                            mNote = null;
+                        }
+                        inputDialog.dismiss();
+                        Utils.Toast("保存成功");
+                        mBoardView.clearScreen();
                     }
                 })
                 .setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -181,8 +190,8 @@ public class MainActivity extends ToolbarActivity
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    mBoardView.setDrawPaths(mNote.paths);
-                    Utils.Log("paths.size() :　" + mNote.paths.size());
+                    mBoardView.setDrawPaths(mNote.mPaths);
+                    Utils.Log("paths.size() :　" + mNote.mPaths.size());
                 }
             });
 

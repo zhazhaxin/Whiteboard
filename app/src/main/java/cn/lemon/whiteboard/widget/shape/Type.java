@@ -1,4 +1,4 @@
-package cn.lemon.whiteboard.widget.type;
+package cn.lemon.whiteboard.widget.shape;
 
 /**
  * Created by linlongxin on 2016/10/24.

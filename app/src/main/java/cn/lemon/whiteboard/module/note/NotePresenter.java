@@ -1,5 +1,6 @@
 package cn.lemon.whiteboard.module.note;
 
+import java.util.Collections;
 import java.util.List;
 
 import cn.lemon.common.base.presenter.SuperPresenter;
@@ -23,6 +24,7 @@ public class NotePresenter extends SuperPresenter<NoteActivity> {
             public void onCallback(List<Note> data) {
                 if(data.size() > 0){
                     getView().showContent();
+                    Collections.reverse(data);
                     getView().setData(data);
                 }else {
                     getView().showEmpty();

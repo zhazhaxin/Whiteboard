@@ -1,4 +1,4 @@
-package cn.lemon.whiteboard.widget.type;
+package cn.lemon.whiteboard.widget.shape;
 
 import android.graphics.Canvas;
 

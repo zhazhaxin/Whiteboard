@@ -1,15 +1,19 @@
 package cn.lemon.whiteboard.module.note;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import cn.alien95.util.TimeTransform;
+import cn.lemon.common.base.widget.MaterialDialog;
 import cn.lemon.view.adapter.BaseViewHolder;
 import cn.lemon.view.adapter.RecyclerAdapter;
 import cn.lemon.whiteboard.R;
 import cn.lemon.whiteboard.app.Config;
+import cn.lemon.whiteboard.data.NoteModel;
 
 /**
  * Created by user on 2016/10/25.
@@ -57,12 +61,32 @@ public class NoteAdapter extends RecyclerAdapter<Note> {
         }
 
         @Override
-        public void setData(Note object) {
-            super.setData(object);
-            if(object != null){
-                mTitle.setText(object.title);
-                mTime.setText(TimeTransform.getRecentlyDate(object.createTime));
+        public void setData(final Note note) {
+            super.setData(note);
+            if(note != null){
+                mTitle.setText(note.mTitle);
+                mTime.setText(TimeTransform.getRecentlyDate(note.mCreateTime));
             }
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    deleteDialog(note);
+                    return true;
+                }
+            });
+        }
+
+        public void deleteDialog(final Note note) {
+            new MaterialDialog.Builder(itemView.getContext()).setTitle("是否删除")
+                    .setCancelable(true)
+                    .setOnPositiveClickListener(new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            NoteModel.getInstance().deleteNoteFile(note.mFileName);
+                            remove(note);
+                            dialog.dismiss();
+                        }
+                    }).show();
         }
     }
 }
