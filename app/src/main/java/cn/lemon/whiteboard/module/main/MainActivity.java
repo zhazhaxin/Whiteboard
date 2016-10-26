@@ -10,8 +10,14 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.PopupWindow;
+import android.widget.SeekBar;
+import android.widget.TextView;
 
 import cn.alien95.util.Utils;
 import cn.lemon.common.base.ToolbarActivity;
@@ -25,8 +31,10 @@ import cn.lemon.whiteboard.widget.BoardView;
 import cn.lemon.whiteboard.widget.FloatAdapter;
 import cn.lemon.whiteboard.widget.FloatViewGroup;
 import cn.lemon.whiteboard.widget.InputDialog;
+import cn.lemon.whiteboard.widget.shape.DrawShape;
 
 import static cn.lemon.whiteboard.R.id.note;
+import static cn.lemon.whiteboard.R.id.size;
 
 public class MainActivity extends ToolbarActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -101,8 +109,9 @@ public class MainActivity extends ToolbarActivity
             case R.id.color:
                 mBoardView.getCurrentShape().setPaintColor(Color.BLUE);
                 break;
-            case R.id.size:
-                mBoardView.getCurrentShape().setPaintWidth(15f);
+            case size:
+                showPopupWindow();
+//                mBoardView.getCurrentShape().setPaintWidth(15f);
                 break;
             case R.id.recall:
                 mBoardView.reCall();
@@ -166,7 +175,44 @@ public class MainActivity extends ToolbarActivity
                 mBoardView.clearScreen();
             }
         });
+    }
 
+    //设置画笔大小
+    public void showPopupWindow() {
+        View view = LayoutInflater.from(this).inflate(R.layout.window_seek_bar, null);
+
+        SeekBar seekBar = (SeekBar) view.findViewById(R.id.seek_bar);
+        final TextView size = (TextView) view.findViewById(R.id.size);
+        if(mBoardView.getCurrentShape() == null){
+            seekBar.setProgress(4);
+            size.setText("4");
+        }else {
+            int numSize = (int) mBoardView.getCurrentShape().getPaintWidth();
+            seekBar.setProgress(numSize);
+            size.setText(numSize + "");
+        }
+
+        final PopupWindow popupWindow = new PopupWindow(view, ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        popupWindow.showAsDropDown(getToolbar());
+
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                size.setText(progress + "");
+                DrawShape.mPaintWidth = progress;
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                popupWindow.dismiss();
+            }
+        });
     }
 
     @Override

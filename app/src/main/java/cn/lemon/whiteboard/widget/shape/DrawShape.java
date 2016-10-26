@@ -16,8 +16,8 @@ public abstract class DrawShape {
     protected WritablePaint mPaint;
     private boolean isEraser = false; //是否是橡皮
 
-    private static int mPaintColor = Color.BLACK;
-    private static float mPaintWidth = 4f;
+    public static int mPaintColor = Color.BLACK;
+    public static float mPaintWidth = 4f;
 
     public DrawShape(BoardView boardView) {
         //注入BoardView对象
@@ -57,7 +57,7 @@ public abstract class DrawShape {
         mPaint.setStrokeWidth(width);
     }
 
-    public static float getPaintWidth() {
+    public float getPaintWidth() {
         return mPaintWidth;
     }
 
