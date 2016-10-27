@@ -210,6 +210,12 @@ public class MainActivity extends ToolbarActivity
                 mBoardView.clearScreen();
             }
         });
+        noteDialog.setPassiveClickListener(new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                mBoardView.updateBitmap();
+            }
+        });
     }
 
     //设置画笔大小

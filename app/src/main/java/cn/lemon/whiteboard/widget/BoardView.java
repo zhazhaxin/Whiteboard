@@ -222,6 +222,7 @@ public class BoardView extends View {
         mSavePath.clear();
         mDeletePath.clear();
         isClearScreen = true;
+        mShape = null;
         MultiLineShape.clear();
         invalidate();
     }
