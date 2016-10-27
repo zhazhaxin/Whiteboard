@@ -49,6 +49,10 @@ public class ColorAdapter extends RecyclerAdapter<Integer> {
         public void onItemViewClick(Integer color) {
             super.onItemViewClick(color);
             DrawShape.mPaintColor = color;
+            mColorView.setColor(color, true);
+            if (mContext instanceof MainActivity) {
+                ((MainActivity) mContext).setShowingColorSelector(false);
+            }
             if(mWindow.isShowing()){
                 mWindow.dismiss();
             }
@@ -57,11 +61,10 @@ public class ColorAdapter extends RecyclerAdapter<Integer> {
         @Override
         public void setData(Integer color) {
             super.setData(color);
-            mColorView.setColor(color);
-            if (mContext instanceof MainActivity && ((MainActivity) mContext).getPaintColor() == color) {
-                mColorView.setChecked(true);
+            if (mContext instanceof MainActivity && DrawShape.mPaintColor == color) {
+                mColorView.setColor(color, true);
             }else {
-                mColorView.setChecked(false);
+                mColorView.setColor(color, false);
             }
         }
     }

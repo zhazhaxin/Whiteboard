@@ -32,9 +32,10 @@ public class ColorView extends View {
     public ColorView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mCirclePaint = new Paint();
-        mLinePaint = new Paint();
+        mCirclePaint.setAntiAlias(true);
         mCirclePaint.setStyle(Paint.Style.FILL);
 
+        mLinePaint = new Paint();
         mLinePaint.setStyle(Paint.Style.STROKE);
         mLinePaint.setColor(Color.WHITE);
         mLinePaint.setStrokeWidth(8f);
@@ -65,11 +66,11 @@ public class ColorView extends View {
             int startX;
             int startY;
             startX = mWidth / 5;
-            startY = mHeight / 5 * 3;
+            startY = mHeight / 7 * 4;
             path.moveTo(startX, startY);
             //先只考虑width == height;后期完善
             int midX = mWidth / 5 * 2;
-            int midY = mHeight / 3 * 2;
+            int midY = mHeight / 4 * 3;
             path.lineTo(midX, midY);
             int endX = mWidth / 5 * 4;
             int endY = mHeight / 3;
@@ -78,8 +79,9 @@ public class ColorView extends View {
         }
     }
 
-    public void setColor(int color) {
+    public void setColor(int color, boolean isChecked) {
         mCirclePaint.setColor(color);
+        this.isChecked = isChecked;
         invalidate();
     }
 

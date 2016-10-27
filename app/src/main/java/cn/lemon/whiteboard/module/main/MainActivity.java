@@ -2,7 +2,6 @@ package cn.lemon.whiteboard.module.main;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.NavigationView;
@@ -36,7 +35,6 @@ import cn.lemon.whiteboard.widget.InputDialog;
 import cn.lemon.whiteboard.widget.shape.DrawShape;
 
 import static cn.lemon.whiteboard.R.id.note;
-import static cn.lemon.whiteboard.R.id.size;
 
 public class MainActivity extends ToolbarActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -47,6 +45,13 @@ public class MainActivity extends ToolbarActivity
     private long mFirstPressBackTime = 0;
     private Handler mHandler;
     private Note mNote;
+
+    private boolean isShowingColorSelector = false;
+    private boolean isShowingSizeSelector = false;
+
+    private PopupWindow mColorWindow;
+    private PopupWindow mSizeWindow;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,11 +113,20 @@ public class MainActivity extends ToolbarActivity
                 showNoteDialog();
                 break;
             case R.id.color:
-                showColorSelectorWindow();
-//                mBoardView.getCurrentShape().setPaintColor(Color.BLUE);
+                if (isShowingColorSelector) {
+                    mColorWindow.dismiss();
+                    isShowingColorSelector = false;
+                } else {
+                    showColorSelectorWindow();
+                }
                 break;
-            case size:
-                showPaintWidthWindow();
+            case R.id.size:
+                if (isShowingSizeSelector) {
+                    mSizeWindow.dismiss();
+                    isShowingSizeSelector = false;
+                } else {
+                    showSizeSelectorWindow();
+                }
                 break;
             case R.id.recall:
                 mBoardView.reCall();
@@ -179,9 +193,15 @@ public class MainActivity extends ToolbarActivity
     }
 
     //设置画笔大小
-    public void showPaintWidthWindow() {
-        View view = LayoutInflater.from(this).inflate(R.layout.window_seek_bar, null);
-
+    public void showSizeSelectorWindow() {
+        if (isShowingSizeSelector) {
+            return;
+        } else if (isShowingColorSelector) {
+            mColorWindow.dismiss();
+            isShowingColorSelector = false;
+        }
+        isShowingSizeSelector = true;
+        View view = LayoutInflater.from(this).inflate(R.layout.window_size_selector, null);
         SeekBar seekBar = (SeekBar) view.findViewById(R.id.seek_bar);
         final TextView size = (TextView) view.findViewById(R.id.size);
         if(mBoardView.getCurrentShape() == null){
@@ -193,9 +213,9 @@ public class MainActivity extends ToolbarActivity
             size.setText(numSize + "");
         }
 
-        final PopupWindow popupWindow = new PopupWindow(view, ViewGroup.LayoutParams.MATCH_PARENT,
+        mSizeWindow = new PopupWindow(view, ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
-        popupWindow.showAsDropDown(getToolbar());
+        mSizeWindow.showAsDropDown(getToolbar());
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -210,23 +230,31 @@ public class MainActivity extends ToolbarActivity
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                popupWindow.dismiss();
+                mSizeWindow.dismiss();
+                isShowingSizeSelector = false;
             }
         });
     }
 
 
     public void showColorSelectorWindow(){
+        if (isShowingColorSelector) {
+            return;
+        } else if (isShowingSizeSelector) {
+            mSizeWindow.dismiss();
+            isShowingSizeSelector = false;
+        }
+        isShowingColorSelector = true;
         View view = LayoutInflater.from(this).inflate(R.layout.window_color_selector, null);
-        final PopupWindow popupWindow = new PopupWindow(view, ViewGroup.LayoutParams.MATCH_PARENT,
+        mColorWindow = new PopupWindow(view, ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
 
         RefreshRecyclerView recyclerView = (RefreshRecyclerView) view.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new GridLayoutManager(this,4));
-        ColorAdapter adapter = new ColorAdapter(this,Config.COLORS);
+        ColorAdapter adapter = new ColorAdapter(this, Config.COLORS, mColorWindow);
         recyclerView.setAdapter(adapter);
 
-        popupWindow.showAsDropDown(getToolbar());
+        mColorWindow.showAsDropDown(getToolbar());
     }
 
     @Override
@@ -248,11 +276,7 @@ public class MainActivity extends ToolbarActivity
         mNote = null;
     }
 
-    public int getPaintColor(){
-        if(mBoardView.getCurrentShape() == null){
-            return Color.WHITE;
-        }else {
-            return mBoardView.getCurrentShape().getPaintColor();
-        }
+    public void setShowingColorSelector(boolean b) {
+        isShowingColorSelector = b;
     }
 }

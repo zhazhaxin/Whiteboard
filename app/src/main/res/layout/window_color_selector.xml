@@ -9,8 +9,9 @@
     <cn.lemon.view.RefreshRecyclerView
         android:id="@+id/recycler_view"
         android:background="@android:color/white"
-        android:layout_width="240dp"
-        android:layout_height="240dp"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        app:refresh_able="false"
         app:load_more_able="false" />
 
 </LinearLayout>

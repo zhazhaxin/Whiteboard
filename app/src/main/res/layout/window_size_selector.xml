@@ -12,7 +12,7 @@
         android:layout_marginTop="8dp"
         android:gravity="center_horizontal"
         android:textColor="@color/pink"
-        android:textSize="20sp"
+        android:textSize="16sp"
         tools:text="4" />
 
     <SeekBar
@@ -20,6 +20,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="8dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginRight="24dp"
         android:max="100"
         tools:progress="4" />
 
