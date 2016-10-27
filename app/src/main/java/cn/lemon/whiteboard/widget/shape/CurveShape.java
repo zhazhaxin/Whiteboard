@@ -14,11 +14,7 @@ public class CurveShape extends DrawShape {
     private Rect mRect;
     protected WritablePath mPath;
 
-    private float mStartX;
-    private float mStartY;
-
-    public CurveShape(BoardView view) {
-        super(view);
+    public CurveShape() {
         mPath = new WritablePath();
         mRect = new Rect();
     }
@@ -35,8 +31,8 @@ public class CurveShape extends DrawShape {
     public void touchMove(int currentX, int currentY) {
 
         int border = (int) mPaint.getStrokeWidth();
-        mRect.set((int) mStartX - border, (int) mStartY - border,
-                (int) mStartX + border, (int) mStartY + border);
+        mRect.set( mStartX - border,  mStartY - border,
+                 mStartX + border,  mStartY + border);
 
         float mMiddleX = (currentX + mStartX) / 2;
         float mMiddleY = (currentY + mStartY) / 2;
@@ -53,8 +49,6 @@ public class CurveShape extends DrawShape {
                 (int) mMiddleX + border,
                 (int) mMiddleY + border);
 
-        //绘制Rect的曲线
-        mDrawView.invalidate(mRect);
         mStartX = currentX;
         mStartY = currentY;
     }

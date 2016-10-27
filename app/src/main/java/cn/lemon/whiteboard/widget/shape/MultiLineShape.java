@@ -2,7 +2,7 @@ package cn.lemon.whiteboard.widget.shape;
 
 import android.graphics.Canvas;
 
-import cn.lemon.whiteboard.widget.BoardView;
+import cn.alien95.util.Utils;
 
 /**
  * Created by user on 2016/10/27.
@@ -11,18 +11,12 @@ import cn.lemon.whiteboard.widget.BoardView;
 public class MultiLineShape extends DrawShape {
 
     private static WritablePath mPath = new WritablePath();
-    private float mEndX;
-    private float mEndY;
 
-    private static float mNextStartX;
-    private static float mNextStartY;
-
-    public MultiLineShape(BoardView boardView) {
-        super(boardView);
-    }
+    private static float mNextStartX = -1f;
+    private static float mNextStartY = -1f;
 
     public void touchDown(int startX, int startY){
-        if(mNextStartX == 0 && mNextStartY == 0){
+        if(mNextStartX == -1f && mNextStartY == -1f){
             mStartX = startX;
             mStartY = startY;
             mPath.moveTo(startX,startY);
@@ -32,23 +26,31 @@ public class MultiLineShape extends DrawShape {
         }
     }
 
-
     @Override
     public void touchMove(int currentX, int currentY) {
 
         mEndX = currentX;
         mEndY = currentY;
-        mDrawView.invalidate();
     }
 
-    public void touchUp(int x,int y){
-        mPath.lineTo(x,y);
-        mNextStartX = x;
-        mNextStartY = y;
+    public void touchUp(int endX,int endY){
+        super.touchUp(endX,endY); //给他们赋值
+        mPath.lineTo(endX,endY);
+        mNextStartX = endX;
+        mNextStartY = endY;
     }
 
     @Override
     public void draw(Canvas canvas) {
-        canvas.drawLine(mStartX,mStartY,mEndX,mEndY,mPaint);
+        if(mStartX != mEndX || mStartY != mEndY){
+            canvas.drawLine(mStartX,mStartY,mEndX,mEndY,mPaint);
+            Utils.Log("MultiLineShape start-x : " + mStartX + "  start-y : " + mStartY +
+            "  end-x : " + mEndX + "  end-y : " + mEndY);
+        }
+    }
+
+    public static void clear(){
+        mNextStartX = -1f;
+        mNextStartY = -1f;
     }
 }

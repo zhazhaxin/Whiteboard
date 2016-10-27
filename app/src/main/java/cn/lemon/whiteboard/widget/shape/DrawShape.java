@@ -5,7 +5,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 
 import cn.alien95.util.Utils;
-import cn.lemon.whiteboard.widget.BoardView;
 
 /**
  * Created by linlongxin on 2016/10/24.
@@ -13,17 +12,17 @@ import cn.lemon.whiteboard.widget.BoardView;
 
 public abstract class DrawShape {
 
-    protected BoardView mDrawView;
     protected WritablePaint mPaint;
     protected int mStartX;
     protected int mStartY;
+    protected int mEndX;
+    protected int mEndY;
 
     public static int mPaintColor = Color.BLACK;
     public static float mPaintWidth = 5f;
 
-    public DrawShape(BoardView boardView) {
+    public DrawShape() {
         //注入BoardView对象
-        mDrawView = boardView;
         mPaint = new WritablePaint();
         mPaint.setAntiAlias(true);
         mPaint.setColor(mPaintColor);
@@ -38,6 +37,11 @@ public abstract class DrawShape {
         mStartX = startX;
         mStartY = startY;
         Utils.Log("start-x : " + mStartX + "  start-y : " + mStartY);
+    }
+
+    public void touchUp(int endX,int endY){
+        mEndX = endX;
+        mEndY = endY;
     }
 
     public abstract void touchMove(int currentX, int currentY);
@@ -56,4 +60,6 @@ public abstract class DrawShape {
     public int getStartY(){
         return mStartY;
     }
+    public int getEndX(){return mEndX;}
+    public int getEndY(){return mEndY;}
 }

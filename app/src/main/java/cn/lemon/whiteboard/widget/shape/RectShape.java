@@ -2,9 +2,6 @@ package cn.lemon.whiteboard.widget.shape;
 
 import android.graphics.Canvas;
 import android.graphics.Rect;
-import android.util.Log;
-
-import cn.lemon.whiteboard.widget.BoardView;
 
 /**
  * Created by linlongxin on 2016/10/24.
@@ -13,14 +10,11 @@ import cn.lemon.whiteboard.widget.BoardView;
 public class RectShape extends DrawShape {
 
     private final String TAG = "RectShape";
-    public int mEndX;
-    public int mEndY;
     private int mConstantPointX;
     private int mConstantPointY;
     private Rect mRect;
 
-    public RectShape(BoardView boardView) {
-        super(boardView);
+    public RectShape() {
         mRect = new Rect();
     }
 
@@ -62,8 +56,7 @@ public class RectShape extends DrawShape {
             }
 
         mRect = new Rect(mStartX, mStartY, mEndX, mEndY);
-        Log.i(TAG, "left : " + mStartX + " top : " + mStartY + " right : " + mEndX + " bottom : " + mEndY);
-        mDrawView.invalidate(mRect); //调用下面draw()方法
+//        Log.i(TAG, "left : " + mStartX + " top : " + mStartY + " right : " + mEndX + " bottom : " + mEndY);
     }
 
     @Override

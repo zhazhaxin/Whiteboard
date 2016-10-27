@@ -99,22 +99,22 @@ public class BoardView extends View {
                 //曲线
                 switch (mDrawType) {
                     case Type.CURVE:
-                        mShape = new CurveShape(this);
+                        mShape = new CurveShape();
                         break;
                     case Type.WIPE:
-                        mShape = new WipeShape(this);
+                        mShape = new WipeShape();
                         break;
                     case Type.RECTANGLE:
-                        mShape = new RectShape(this);
+                        mShape = new RectShape();
                         break;
                     case Type.OVAL:
-                        mShape = new OvalShape(this);
+                        mShape = new OvalShape();
                         break;
                     case Type.LINE:
-                        mShape = new LineShape(this);
+                        mShape = new LineShape();
                         break;
                     case Type.MULTI_LINE:
-                        mShape = new MultiLineShape(this);
+                        mShape = new MultiLineShape();
                         break;
                 }
                 mShape.touchDown(mStartX,mStartY);
@@ -122,9 +122,11 @@ public class BoardView extends View {
 
             case MotionEvent.ACTION_MOVE:
                 mShape.touchMove(currentX, currentY);
+                invalidate();
                 return true;
 
             case MotionEvent.ACTION_UP:
+                mShape.touchUp(currentX,currentY);
                 //把之前的path保存绘制到mDrawBitmap上
                 ShapeResource resource = new ShapeResource();
                 if (mShape instanceof WipeShape) {
@@ -134,28 +136,14 @@ public class BoardView extends View {
                     resource.mType = Type.CURVE;
                     resource.mCurvePath = ((CurveShape) mShape).getPath();
                 } else if (mShape instanceof LineShape) {
-                    resource.mType = Type.LINE;
-                    resource.mStartX = (mShape).getStartX();
-                    resource.mStartY = (mShape).getStartY();
-                    resource.mEndX = ((LineShape) mShape).mEndX;
-                    resource.mEndY = ((LineShape) mShape).mEndY;
-                    resource.mPaint = mShape.getPaint();
+                    saveShapeResource(resource,Type.LINE);
                 } else if (mShape instanceof OvalShape) {
-                    resource.mType = Type.OVAL;
-                    resource.mStartX = (mShape).getStartX();
-                    resource.mStartY = (mShape).getStartY();
-                    resource.mEndX = ((OvalShape) mShape).mEndX;
-                    resource.mEndY = ((OvalShape) mShape).mEndY;
-                    resource.mPaint = mShape.getPaint();
+                    saveShapeResource(resource,Type.OVAL);
                 } else if (mShape instanceof RectShape) {
-                    resource.mType = Type.RECTANGLE;
-                    resource.mStartX = (mShape).getStartX();
-                    resource.mStartY = (mShape).getStartY();
-                    resource.mEndX = ((RectShape) mShape).mEndX;
-                    resource.mEndY = ((RectShape) mShape).mEndY;
-                    resource.mPaint = mShape.getPaint();
+                    saveShapeResource(resource,Type.RECTANGLE);
                 } else if(mShape instanceof MultiLineShape){
-                    ((MultiLineShape) mShape).touchUp(currentX,currentY);
+                    //多边形分解成直线
+                    saveShapeResource(resource,Type.LINE);
                 }
                 mSavePath.add(resource);
                 invalidate();
@@ -164,6 +152,16 @@ public class BoardView extends View {
             default:
                 return false;
         }
+    }
+
+    //每次ACTION_UP事件保存路径参数
+    public void saveShapeResource(ShapeResource resource,int type){
+        resource.mType = type;
+        resource.mStartX = (mShape).getStartX();
+        resource.mStartY = (mShape).getStartY();
+        resource.mEndX = ( mShape).getEndX();
+        resource.mEndY = ( mShape).getEndY();
+        resource.mPaint = mShape.getPaint();
     }
 
     //撤回
@@ -228,6 +226,7 @@ public class BoardView extends View {
         mSavePath.clear();
         mDeletePath.clear();
         isClearScreen = true;
+        MultiLineShape.clear();
         invalidate();
     }
 
