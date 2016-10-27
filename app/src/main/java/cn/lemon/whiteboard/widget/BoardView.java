@@ -272,10 +272,6 @@ public class BoardView extends View {
         mDrawType = type;
     }
 
-    public DrawShape getCurrentShape() {
-        return mShape;
-    }
-
     public Bitmap getDrawBitmap() {
         return mDrawBitmap;
     }

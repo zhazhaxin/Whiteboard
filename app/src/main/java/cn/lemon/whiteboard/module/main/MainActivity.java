@@ -54,7 +54,6 @@ public class MainActivity extends ToolbarActivity
     private DrawerLayout mDrawer;
     private NavigationView mNavigationView;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -128,9 +127,6 @@ public class MainActivity extends ToolbarActivity
             case R.id.save_note:
                 showNoteDialog();
                 break;
-            case R.id.save_image_album:
-                CurveModel.getInstance().saveCurveToAlbum(mBoardView.getDrawBitmap());
-                break;
             case R.id.save_image_to_app:
                 CurveModel.getInstance().saveCurveToApp(mBoardView.getDrawBitmap());
                 break;
@@ -170,6 +166,7 @@ public class MainActivity extends ToolbarActivity
                 startActivity(ImageActivity.class);
                 break;
             case R.id.about:
+                startActivity(AboutActivity.class);
                 break;
         }
         return true;
@@ -227,14 +224,9 @@ public class MainActivity extends ToolbarActivity
         View view = LayoutInflater.from(this).inflate(R.layout.window_size_selector, null);
         SeekBar seekBar = (SeekBar) view.findViewById(R.id.seek_bar);
         final TextView size = (TextView) view.findViewById(R.id.size);
-        if(mBoardView.getCurrentShape() == null){
-            seekBar.setProgress(4);
-            size.setText("4");
-        }else {
-            int numSize = (int) mBoardView.getCurrentShape().getPaintWidth();
-            seekBar.setProgress(numSize);
-            size.setText(numSize + "");
-        }
+        int numSize = (int) DrawShape.mPaintWidth;
+        seekBar.setProgress(numSize);
+        size.setText(numSize + "");
 
         mSizeWindow = new PopupWindow(view, ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -259,7 +251,7 @@ public class MainActivity extends ToolbarActivity
         });
     }
 
-
+    //颜色选择器
     public void showColorSelectorWindow(){
         if (isShowingColorSelector) {
             return;

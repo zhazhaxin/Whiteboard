@@ -45,12 +45,6 @@ public class CurveModel extends SuperModel {
         return getInstance(CurveModel.class);
     }
 
-    //保存到PublicDirectory
-    public void saveCurveToAlbum(final Bitmap resource) {
-        File image = new File(mPublicRootDir, IMAGE_HEADER + System.currentTimeMillis() + ".png");
-        saveImage(resource, image);
-    }
-
     //保存到APP目录
     public void saveCurveToApp(final Bitmap resource) {
         File image = new File(mAppRootDir, System.currentTimeMillis() + ".png");

@@ -30,11 +30,6 @@
         app:showAsAction="never" />
 
     <item
-        android:id="@+id/save_image_album"
-        android:title="保存图片到相册"
-        app:showAsAction="never" />
-
-    <item
         android:id="@+id/save_image_to_app"
         android:title="保存图片到App"
         app:showAsAction="never" />

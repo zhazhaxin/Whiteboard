@@ -17,7 +17,7 @@ public abstract class DrawShape {
     private boolean isEraser = false; //是否是橡皮
 
     public static int mPaintColor = Color.BLACK;
-    public static float mPaintWidth = 4f;
+    public static float mPaintWidth = 5f;
 
     public DrawShape(BoardView boardView) {
         //注入BoardView对象

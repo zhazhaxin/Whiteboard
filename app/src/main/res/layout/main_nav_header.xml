@@ -13,8 +13,8 @@
 
     <ImageView
         android:id="@+id/avatar"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
         app:srcCompat="@drawable/ic_avatar" />
 
 
@@ -22,7 +22,7 @@
         android:id="@+id/name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:text="Lemon"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 

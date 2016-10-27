@@ -28,6 +28,8 @@
             android:label="我的图片"/>
         <activity android:name=".module.account.ViewImageActivity"
             android:label="返回"/>
+        <activity android:name=".module.main.AboutActivity"
+            android:label="关于"/>
     </application>
 
 </manifest>

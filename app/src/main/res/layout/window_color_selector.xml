@@ -8,7 +8,7 @@
 
     <cn.lemon.view.RefreshRecyclerView
         android:id="@+id/recycler_view"
-        android:background="@android:color/white"
+        android:background="@color/orangeLight"
         android:layout_width="200dp"
         android:layout_height="200dp"
         app:refresh_able="false"

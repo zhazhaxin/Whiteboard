@@ -5,4 +5,6 @@
     <color name="colorAccent">#32bf82</color>
 
     <color name="orangeDark">#dfa246</color>
+    <color name="orangeLight">#f7edde</color>
+    <color name="blackLight">#121111</color>
 </resources>

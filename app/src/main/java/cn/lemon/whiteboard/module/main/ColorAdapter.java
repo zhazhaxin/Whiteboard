@@ -49,7 +49,6 @@ public class ColorAdapter extends RecyclerAdapter<Integer> {
         public void onItemViewClick(Integer color) {
             super.onItemViewClick(color);
             DrawShape.mPaintColor = color;
-            mColorView.setColor(color, true);
             if (mContext instanceof MainActivity) {
                 ((MainActivity) mContext).setShowingColorSelector(false);
             }
