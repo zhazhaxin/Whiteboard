@@ -64,8 +64,8 @@ public class CurveShape extends DrawShape {
     }
 
     public WritablePath getPath(){
-        mPaint.mColor = getPaintColor();
-        mPaint.mWidth = getPaintWidth();
+        mPaint.mColor = mPaintColor;
+        mPaint.mWidth = mPaintWidth;
         mPath.mPaint = mPaint;
         return mPath;
     }

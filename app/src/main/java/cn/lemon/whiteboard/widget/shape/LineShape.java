@@ -30,6 +30,7 @@ public class LineShape extends DrawShape {
         mDrawView.invalidate();
     }
 
+    //ACTION_MOVE更新画布，调用这里
     @Override
     public void draw(Canvas canvas) {
         canvas.drawLine(mStartX, mStartY, mEndX, mEndY, mPaint);

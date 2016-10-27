@@ -11,4 +11,5 @@ public interface Type {
     int OVAL = 125;
     int LINE = 126;
     int WIPE = 127;
+    int MULTI_LINE = 128;
 }

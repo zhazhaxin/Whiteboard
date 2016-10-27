@@ -17,6 +17,7 @@ import cn.alien95.util.Utils;
 import cn.lemon.whiteboard.widget.shape.CurveShape;
 import cn.lemon.whiteboard.widget.shape.DrawShape;
 import cn.lemon.whiteboard.widget.shape.LineShape;
+import cn.lemon.whiteboard.widget.shape.MultiLineShape;
 import cn.lemon.whiteboard.widget.shape.OvalShape;
 import cn.lemon.whiteboard.widget.shape.RectShape;
 import cn.lemon.whiteboard.widget.shape.ShapeResource;
@@ -36,6 +37,7 @@ public class BoardView extends View {
     private Paint mPaint;  //渲染画布
     private DrawShape mShape;
 
+    //ACTION_DOWN坐标
     private int mStartX = 0;
     private int mStartY = 0;
 
@@ -111,6 +113,10 @@ public class BoardView extends View {
                     case Type.LINE:
                         mShape = new LineShape(this);
                         break;
+                    case Type.MULTI_LINE:
+                        mShape = new MultiLineShape(this);
+                        ((MultiLineShape)mShape).touchDown(mStartX,mStartY);
+                        break;
                 }
                 return true;
 
@@ -148,6 +154,8 @@ public class BoardView extends View {
                     resource.mEndX = ((RectShape) mShape).mRight;
                     resource.mEndY = ((RectShape) mShape).mBottom;
                     resource.mPaint = mShape.getPaint();
+                } else if(mShape instanceof MultiLineShape){
+                    ((MultiLineShape) mShape).touchUp(mCurrentX,mCurrentY);
                 }
                 mSavePath.add(resource);
                 invalidate();
@@ -257,6 +265,9 @@ public class BoardView extends View {
                 case Type.RECTANGLE:
                     mCanvas.drawRect(resource.mStartX, resource.mStartY,
                             resource.mEndX, resource.mEndY, resource.mPaint);
+                    break;
+                case Type.MULTI_LINE:
+
                     break;
 
             }

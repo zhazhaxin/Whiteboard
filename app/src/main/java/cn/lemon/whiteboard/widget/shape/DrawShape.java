@@ -14,7 +14,8 @@ public abstract class DrawShape {
 
     protected BoardView mDrawView;
     protected WritablePaint mPaint;
-    private boolean isEraser = false; //是否是橡皮
+    protected int mStartX;
+    protected int mStartY;
 
     public static int mPaintColor = Color.BLACK;
     public static float mPaintWidth = 5f;
@@ -35,35 +36,6 @@ public abstract class DrawShape {
     public abstract void touchMove(int startX, int startY, int currentX, int currentY);
 
     public abstract void draw(Canvas canvas);
-
-    public void setPaintColor(int color) {
-        if(isEraser){
-            return;
-        }
-        mPaintColor = color;
-        mPaint.setColor(color);
-
-    }
-
-    public int getPaintColor() {
-        return mPaintColor;
-    }
-
-    public void setPaintWidth(float width) {
-        if(isEraser){
-            return;
-        }
-        mPaintWidth = width;
-        mPaint.setStrokeWidth(width);
-    }
-
-    public float getPaintWidth() {
-        return mPaintWidth;
-    }
-
-    public void setEraser(boolean isEraser){
-        this.isEraser = isEraser;
-    }
 
     public WritablePaint getPaint(){
         mPaint.mColor = mPaintColor;
