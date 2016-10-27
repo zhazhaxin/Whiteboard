@@ -14,26 +14,31 @@ import java.util.List;
 import cn.alien95.util.AsyncThreadPool;
 import cn.alien95.util.Utils;
 import cn.lemon.common.base.model.SuperModel;
-import cn.lemon.whiteboard.module.note.Note;
+import cn.lemon.whiteboard.module.account.Note;
 
 /**
  * Created by user on 2016/10/25.
  */
 
-public class NoteModel extends SuperModel {
+public class AccountModel extends SuperModel {
 
     private Handler mHandler;
 
-    public NoteModel() {
+    public AccountModel() {
         mHandler = new Handler(Looper.getMainLooper());
     }
 
-    public static NoteModel getInstance() {
-        return getInstance(NoteModel.class);
+    public static AccountModel getInstance() {
+        return getInstance(AccountModel.class);
     }
 
     public void saveNote(Note note) {
-        putObject(note.mFileName, note);
+        if (note.mPaths.size() == 0) {
+            Utils.Toast("笔迹不能为空");
+        } else {
+            putObject(note.mFileName, note);
+        }
+
     }
 
     public void deleteNoteFile(final String fileName){
@@ -56,7 +61,32 @@ public class NoteModel extends SuperModel {
         });
     }
 
-    public void getNoteList(final Callback callback) {
+    public void getImageList(final ImageCallback callback) {
+        AsyncThreadPool.getInstance().executeRunnable(new Runnable() {
+            @Override
+            public void run() {
+                final List<String> filePaths = new ArrayList<>();
+                File cacheDir = CurveModel.getInstance().getAppImageDir();
+                if (!cacheDir.exists()) {
+                    Utils.Toast("缓存目录不存在");
+                } else {
+                    File[] files = cacheDir.listFiles();
+                    for (File f : files) {
+                        filePaths.add("file://" + f.getAbsolutePath());
+                    }
+                }
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        callback.onCallback(filePaths);
+                    }
+                });
+            }
+        });
+    }
+
+    //获取笔迹
+    public void getNoteList(final NoteCallback noteCallback) {
         AsyncThreadPool.getInstance().executeRunnable(new Runnable() {
             @Override
             public void run() {
@@ -73,7 +103,7 @@ public class NoteModel extends SuperModel {
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        callback.onCallback(notes);
+                        noteCallback.onCallback(notes);
                     }
                 });
             }
@@ -93,8 +123,12 @@ public class NoteModel extends SuperModel {
         return null;
     }
 
-    public interface Callback {
+    public interface NoteCallback {
         void onCallback(List<Note> data);
+    }
+
+    public interface ImageCallback {
+        void onCallback(List<String> data);
     }
 
 }

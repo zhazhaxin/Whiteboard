@@ -9,12 +9,16 @@
             android:title="白板" />
     </group>
 
-    <item android:title="我的">
+    <item android:title="其他">
         <menu>
             <item
                 android:id="@+id/note"
                 android:icon="@drawable/ic_menu_note"
-                android:title="笔迹" />
+                android:title="我的笔迹" />
+            <item
+                android:id="@+id/image"
+                android:icon="@drawable/ic_menu_image"
+                android:title="我的图片" />
             <item
                 android:id="@+id/about"
                 android:icon="@drawable/ic_menu_about"

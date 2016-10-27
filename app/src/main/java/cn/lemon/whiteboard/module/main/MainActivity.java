@@ -24,17 +24,16 @@ import cn.lemon.common.base.ToolbarActivity;
 import cn.lemon.view.RefreshRecyclerView;
 import cn.lemon.whiteboard.R;
 import cn.lemon.whiteboard.app.Config;
+import cn.lemon.whiteboard.data.AccountModel;
 import cn.lemon.whiteboard.data.CurveModel;
-import cn.lemon.whiteboard.data.NoteModel;
-import cn.lemon.whiteboard.module.note.Note;
-import cn.lemon.whiteboard.module.note.NoteActivity;
+import cn.lemon.whiteboard.module.account.ImageActivity;
+import cn.lemon.whiteboard.module.account.Note;
+import cn.lemon.whiteboard.module.account.NoteActivity;
 import cn.lemon.whiteboard.widget.BoardView;
 import cn.lemon.whiteboard.widget.FloatAdapter;
 import cn.lemon.whiteboard.widget.FloatViewGroup;
 import cn.lemon.whiteboard.widget.InputDialog;
 import cn.lemon.whiteboard.widget.shape.DrawShape;
-
-import static cn.lemon.whiteboard.R.id.note;
 
 public class MainActivity extends ToolbarActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -67,8 +66,20 @@ public class MainActivity extends ToolbarActivity
         //系统生成
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, getToolbar(), R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
+                this, drawer, getToolbar(), R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                if (isShowingColorSelector) {
+                    mColorWindow.dismiss();
+                    isShowingColorSelector = false;
+                } else if (isShowingSizeSelector) {
+                    mSizeWindow.dismiss();
+                    isShowingSizeSelector = false;
+                }
+            }
+        };
+        drawer.addDrawerListener(toggle);
         toggle.syncState();
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -106,11 +117,20 @@ public class MainActivity extends ToolbarActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.save_image:
-                CurveModel.getInstance().saveCurve(mBoardView.getDrawBitmap());
+            case R.id.recall:
+                mBoardView.reCall();
+                break;
+            case R.id.recover:
+                mBoardView.undo();
                 break;
             case R.id.save_note:
                 showNoteDialog();
+                break;
+            case R.id.save_image_album:
+                CurveModel.getInstance().saveCurveToAlbum(mBoardView.getDrawBitmap());
+                break;
+            case R.id.save_image_to_app:
+                CurveModel.getInstance().saveCurveToApp(mBoardView.getDrawBitmap());
                 break;
             case R.id.color:
                 if (isShowingColorSelector) {
@@ -128,12 +148,6 @@ public class MainActivity extends ToolbarActivity
                     showSizeSelectorWindow();
                 }
                 break;
-            case R.id.recall:
-                mBoardView.reCall();
-                break;
-            case R.id.recover:
-                mBoardView.undo();
-                break;
         }
         return true;
     }
@@ -141,20 +155,28 @@ public class MainActivity extends ToolbarActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.draw_board) {
-
-        } else if (id == note) {
-            Intent intent = new Intent(new Intent(this, NoteActivity.class));
-            startActivityForResult(intent, Config.NOTE_REQUEST_CODE);
-        } else if (id == R.id.about) {
-
-        }
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.draw_board:
+                break;
+            case R.id.note:
+                Intent intent = new Intent(new Intent(this, NoteActivity.class));
+                startActivityForResult(intent, Config.NOTE_REQUEST_CODE);
+                break;
+            case R.id.image:
+                startActivity(ImageActivity.class);
+                break;
+            case R.id.about:
+                break;
+        }
         return true;
+    }
+
+    public void startActivity(Class target) {
+        Intent intent = new Intent(this, target);
+        startActivity(intent);
     }
 
     //保存笔迹
@@ -180,9 +202,9 @@ public class MainActivity extends ToolbarActivity
                 long time = System.currentTimeMillis();
                 note.mCreateTime = time;
                 note.mFileName = time + "";
-                NoteModel.getInstance().saveNote(note);
+                AccountModel.getInstance().saveNote(note);
                 if (mNote != null) {
-                    NoteModel.getInstance().deleteNoteFile(mNote.mFileName);
+                    AccountModel.getInstance().deleteNoteFile(mNote.mFileName);
                     mNote = null;
                 }
                 noteDialog.dismiss();

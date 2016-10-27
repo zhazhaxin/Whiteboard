@@ -1,4 +1,4 @@
-package cn.lemon.whiteboard.module.note;
+package cn.lemon.whiteboard.module.account;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -13,7 +13,7 @@ import cn.lemon.view.adapter.BaseViewHolder;
 import cn.lemon.view.adapter.RecyclerAdapter;
 import cn.lemon.whiteboard.R;
 import cn.lemon.whiteboard.app.Config;
-import cn.lemon.whiteboard.data.NoteModel;
+import cn.lemon.whiteboard.data.AccountModel;
 
 /**
  * Created by user on 2016/10/25.
@@ -39,7 +39,7 @@ public class NoteAdapter extends RecyclerAdapter<Note> {
         private TextView mTime;
 
         public NoteViewHolder(ViewGroup parent) {
-            super(parent, R.layout.note_holder_note);
+            super(parent, R.layout.account_holder_note);
         }
 
         @Override
@@ -82,7 +82,7 @@ public class NoteAdapter extends RecyclerAdapter<Note> {
                     .setOnPositiveClickListener(new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            NoteModel.getInstance().deleteNoteFile(note.mFileName);
+                            AccountModel.getInstance().deleteNoteFile(note.mFileName);
                             remove(note);
                             dialog.dismiss();
                         }

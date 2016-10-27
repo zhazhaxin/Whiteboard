@@ -86,8 +86,10 @@ public class ColorView extends View {
     }
 
     public void setChecked(boolean isChecked) {
-        this.isChecked = isChecked;
-        invalidate();
+        if (this.isChecked != isChecked) {
+            this.isChecked = isChecked;
+            invalidate();
+        }
     }
 
 }

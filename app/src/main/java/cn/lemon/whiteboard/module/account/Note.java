@@ -1,4 +1,4 @@
-package cn.lemon.whiteboard.module.note;
+package cn.lemon.whiteboard.module.account;
 
 import java.io.Serializable;
 import java.util.List;
