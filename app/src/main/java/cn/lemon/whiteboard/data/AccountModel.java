@@ -72,7 +72,7 @@ public class AccountModel extends SuperModel {
                 } else {
                     File[] files = cacheDir.listFiles();
                     for (File f : files) {
-                        filePaths.add("file://" + f.getAbsolutePath());
+                        filePaths.add(f.getAbsolutePath());
                     }
                 }
                 mHandler.post(new Runnable() {

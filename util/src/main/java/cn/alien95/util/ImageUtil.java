@@ -340,6 +340,34 @@ public class ImageUtil {
         return true;
     }
 
+    //不压缩
+    public static void getBitmapFromPath(final String filePath, final Callback callback) {
+        if (handler == null) {
+            handler = new Handler(Looper.getMainLooper());
+        }
+        AsyncThreadPool.getInstance().executeRunnable(new Runnable() {
+            @Override
+            public void run() {
+                Bitmap bitmap = null;
+                try {
+                    File file = new File(filePath);
+                    FileInputStream fis = new FileInputStream(file);
+                    bitmap = BitmapFactory.decodeStream(fis);
+                    fis.close();
+                    final Bitmap finalBitmap = bitmap;
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            callback.callback(finalBitmap);
+                        }
+                    });
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
     //回调
     public interface Callback {
 

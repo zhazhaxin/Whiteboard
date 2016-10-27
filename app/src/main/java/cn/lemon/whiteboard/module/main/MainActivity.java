@@ -51,6 +51,9 @@ public class MainActivity extends ToolbarActivity
     private PopupWindow mColorWindow;
     private PopupWindow mSizeWindow;
 
+    private DrawerLayout mDrawer;
+    private NavigationView mNavigationView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,9 +67,9 @@ public class MainActivity extends ToolbarActivity
         mBoardView = (BoardView) findViewById(R.id.board_view);
 
         //系统生成
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, getToolbar(), R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
+                this, mDrawer, getToolbar(), R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
@@ -79,10 +82,10 @@ public class MainActivity extends ToolbarActivity
                 }
             }
         };
-        drawer.addDrawerListener(toggle);
+        mDrawer.addDrawerListener(toggle);
         toggle.syncState();
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        mNavigationView = (NavigationView) findViewById(R.id.nav_view);
+        mNavigationView.setNavigationItemSelectedListener(this);
 
         mAdapter = new FunctionAdapter(this, mBoardView);
         mFloatViews.setAdapter(mAdapter);
@@ -96,9 +99,8 @@ public class MainActivity extends ToolbarActivity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
+        if (mDrawer.isDrawerOpen(GravityCompat.START)) {
+            mDrawer.closeDrawer(GravityCompat.START);
         } else {
             if (System.currentTimeMillis() - mFirstPressBackTime > 1000) {
                 mFirstPressBackTime = System.currentTimeMillis();
@@ -110,7 +112,7 @@ public class MainActivity extends ToolbarActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_activity, menu);
+        getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
@@ -155,8 +157,7 @@ public class MainActivity extends ToolbarActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+        mDrawer.closeDrawer(GravityCompat.START);
         int id = item.getItemId();
         switch (id) {
             case R.id.draw_board:

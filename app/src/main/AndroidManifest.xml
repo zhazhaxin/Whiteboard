@@ -26,6 +26,8 @@
             android:label="我的笔迹" />
         <activity android:name=".module.account.ImageActivity"
             android:label="我的图片"/>
+        <activity android:name=".module.account.ViewImageActivity"
+            android:label="返回"/>
     </application>
 
 </manifest>

@@ -1,10 +1,14 @@
 package cn.lemon.whiteboard.module.account;
 
 import android.content.Context;
-import android.net.Uri;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import java.io.Serializable;
+
+import cn.alien95.util.ImageUtil;
 import cn.lemon.view.adapter.BaseViewHolder;
 import cn.lemon.view.adapter.RecyclerAdapter;
 import cn.lemon.whiteboard.R;
@@ -14,6 +18,7 @@ import cn.lemon.whiteboard.R;
  */
 
 public class ImageAdapter extends RecyclerAdapter<String> {
+
 
     public ImageAdapter(Context context) {
         super(context);
@@ -41,12 +46,22 @@ public class ImageAdapter extends RecyclerAdapter<String> {
         @Override
         public void onItemViewClick(String object) {
             super.onItemViewClick(object);
+            Intent intent = new Intent(itemView.getContext(),ViewImageActivity.class);
+            intent.putExtra(ViewImageActivity.IMAGES_DATA_LIST, (Serializable) getData());
+            intent.putExtra(ViewImageActivity.IMAGE_NUM, getAdapterPosition());
+            itemView.getContext().startActivity(intent);
         }
 
         @Override
         public void setData(String url) {
             super.setData(url);
-            mImage.setImageURI(Uri.parse(url));
+
+            ImageUtil.compress(url, 200, 288, new ImageUtil.Callback() {
+                @Override
+                public void callback(Bitmap bitmap) {
+                    mImage.setImageBitmap(bitmap);
+                }
+            });
         }
     }
 }
