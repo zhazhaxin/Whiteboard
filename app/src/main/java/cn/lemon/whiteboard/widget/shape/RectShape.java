@@ -3,6 +3,8 @@ package cn.lemon.whiteboard.widget.shape;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 
+import cn.alien95.util.Utils;
+
 /**
  * Created by linlongxin on 2016/10/24.
  */
@@ -12,10 +14,8 @@ public class RectShape extends DrawShape {
     private final String TAG = "RectShape";
     private int mConstantPointX;
     private int mConstantPointY;
-    private Rect mRect;
 
     public RectShape() {
-        mRect = new Rect();
     }
 
     @Override
@@ -27,40 +27,40 @@ public class RectShape extends DrawShape {
 
     @Override
     public void touchMove(int currentX, int currentY) {
-        
+        //mStartX,mStartY,mEndX,mEndY 代表矩形两个点
+        //向右上方拖动
+        if (mConstantPointX <= currentX && mConstantPointY >= currentY) {
+            mStartY = currentY;
+            mEndX = currentX;
+        }
+        //左下方拖动
+        else if (mConstantPointX >= currentX && mConstantPointY <= currentY) {
+            mStartX = currentX;
+            mEndY = currentY;
+        }
+        //左上方拖动
+        else if (mConstantPointX >= currentX && mConstantPointY >= currentY) {
+            mStartX = currentX;
+            mStartY = currentY;
+            mEndX = mConstantPointX;
+            mEndY = mConstantPointY;
+        }
+        //右下方拖动
+        else if (mConstantPointX <= currentX && mConstantPointY <= currentY) {
+            mEndX = currentX;
+            mEndY = currentY;
+        }
 
-            //向右上方拖动
-            if (mStartY >= currentY && currentX >= mStartX) {
-                mStartY = currentY;
-                mEndX = currentX;
-                mEndY = mConstantPointY;
-            }
-            //左下方拖动
-            else if (mStartX >= currentX && currentY >= mStartY) {
-                mStartX = currentX;
-                mEndY = currentY;
-                mEndX = mConstantPointX;
-            }
-            //左上方拖动
-            else if (currentX <= mStartX && currentY <= mStartY) {
-                mStartX = currentX;
-                mStartY = currentY;
-                mEndX = mConstantPointX;
-                mEndY = mConstantPointY;
-            }
-            //右下方拖动
-            else {
-                mEndX = currentX;
-                mEndY = currentY;
-
-            }
-
-        mRect = new Rect(mStartX, mStartY, mEndX, mEndY);
-//        Log.i(TAG, "left : " + mStartX + " top : " + mStartY + " right : " + mEndX + " bottom : " + mEndY);
+        Utils.Log("Rectangle startX : " + mStartX + " startY : "
+                + mStartY + " endX : " + mEndX + " endY : " + mEndY);
     }
 
     @Override
     public void draw(Canvas canvas) {
-        canvas.drawRect(mRect, mPaint);
+        if (mStartX == 0 && mStartY == 0) {
+            return;
+        }
+        Rect rect = new Rect(mStartX, mStartY, mEndX, mEndY);
+        canvas.drawRect(rect, mPaint);
     }
 }

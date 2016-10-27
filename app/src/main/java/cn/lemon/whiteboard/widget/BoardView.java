@@ -37,10 +37,6 @@ public class BoardView extends View {
     private Paint mPaint;  //渲染画布
     private DrawShape mShape;
 
-    //ACTION_DOWN坐标
-    private int mStartX = 0;
-    private int mStartY = 0;
-
     private boolean isClearScreen = false;
     private boolean isRecentRecallOrUndo = false;
 
@@ -94,8 +90,8 @@ public class BoardView extends View {
                 if (mDownAction != null) {
                     mDownAction.dealDownAction();
                 }
-                mStartX = (int) event.getX();
-                mStartY = (int) event.getY();
+                int mStartX = (int) event.getX();
+                int mStartY = (int) event.getY();
                 //曲线
                 switch (mDrawType) {
                     case Type.CURVE:
@@ -117,7 +113,7 @@ public class BoardView extends View {
                         mShape = new MultiLineShape();
                         break;
                 }
-                mShape.touchDown(mStartX,mStartY);
+                mShape.touchDown(mStartX, mStartY);
                 return true;
 
             case MotionEvent.ACTION_MOVE:
@@ -265,10 +261,6 @@ public class BoardView extends View {
                     mCanvas.drawRect(resource.mStartX, resource.mStartY,
                             resource.mEndX, resource.mEndY, resource.mPaint);
                     break;
-                case Type.MULTI_LINE:
-
-                    break;
-
             }
         }
     }
