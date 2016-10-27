@@ -10,8 +10,6 @@ import cn.lemon.whiteboard.widget.BoardView;
 
 public class LineShape extends DrawShape {
 
-    public int mStartX;
-    public int mStartY;
     public int mEndX;
     public int mEndY;
 
@@ -20,11 +18,7 @@ public class LineShape extends DrawShape {
     }
 
     @Override
-    public void touchMove(int startX, int startY, int currentX, int currentY) {
-        if (mStartX == 0 && mStartY == 0) {
-            mStartX = startX;
-            mStartY = startY;
-        }
+    public void touchMove( int currentX, int currentY) {
         mEndX = currentX;
         mEndY = currentY;
         mDrawView.invalidate();

@@ -13,10 +13,8 @@ import cn.lemon.whiteboard.widget.BoardView;
 public class RectShape extends DrawShape {
 
     private final String TAG = "RectShape";
-    public int mLeft;
-    public int mTop;
-    public int mRight;
-    public int mBottom;
+    public int mEndX;
+    public int mEndY;
     private int mConstantPointX;
     private int mConstantPointY;
     private Rect mRect;
@@ -27,44 +25,44 @@ public class RectShape extends DrawShape {
     }
 
     @Override
-    public void touchMove(int startX, int startY, int currentX, int currentY) {
-        //开始向右下方画
-        if (mTop == 0 && mLeft == 0) {
-            mLeft = startX;
-            mTop = startY;
-            mConstantPointX = mLeft;
-            mConstantPointY = mTop;
-        } else {
+    public void touchDown(int startX, int startY) {
+        super.touchDown(startX, startY);
+        mConstantPointX = startX;
+        mConstantPointY = startY;
+    }
+
+    @Override
+    public void touchMove(int currentX, int currentY) {
+        
 
             //向右上方拖动
-            if (mTop >= currentY && currentX >= mLeft) {
-                mTop = currentY;
-                mRight = currentX;
-                mBottom = mConstantPointY;
+            if (mStartY >= currentY && currentX >= mStartX) {
+                mStartY = currentY;
+                mEndX = currentX;
+                mEndY = mConstantPointY;
             }
             //左下方拖动
-            else if (mLeft >= currentX && currentY >= mTop) {
-                mLeft = currentX;
-                mBottom = currentY;
-                mRight = mConstantPointX;
+            else if (mStartX >= currentX && currentY >= mStartY) {
+                mStartX = currentX;
+                mEndY = currentY;
+                mEndX = mConstantPointX;
             }
             //左上方拖动
-            else if (currentX <= mLeft && currentY <= mTop) {
-                mLeft = currentX;
-                mTop = currentY;
-                mRight = mConstantPointX;
-                mBottom = mConstantPointY;
+            else if (currentX <= mStartX && currentY <= mStartY) {
+                mStartX = currentX;
+                mStartY = currentY;
+                mEndX = mConstantPointX;
+                mEndY = mConstantPointY;
             }
             //右下方拖动
             else {
-                mRight = currentX;
-                mBottom = currentY;
+                mEndX = currentX;
+                mEndY = currentY;
 
             }
-        }
 
-        mRect = new Rect(mLeft, mTop, mRight, mBottom);
-        Log.i(TAG, "left : " + mLeft + " top : " + mTop + " right : " + mRight + " bottom : " + mBottom);
+        mRect = new Rect(mStartX, mStartY, mEndX, mEndY);
+        Log.i(TAG, "left : " + mStartX + " top : " + mStartY + " right : " + mEndX + " bottom : " + mEndY);
         mDrawView.invalidate(mRect); //调用下面draw()方法
     }
 

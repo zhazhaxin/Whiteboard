@@ -4,6 +4,7 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 
 import cn.lemon.whiteboard.widget.BoardView;
+
 /**
  * Created by linlongxin on 2016/10/24.
  */
@@ -22,15 +23,16 @@ public class CurveShape extends DrawShape {
         mRect = new Rect();
     }
 
-    public void touchMove(int startX, int startY, int currentX, int currentY) {
-        if (mStartX == 0 && mStartY == 0) {
-            mStartX = startX;
-            mStartY = startY;
-            //设置曲线开始点
-            mPath.moveTo(mStartX, mStartY);
-            float[] a = {mStartX,mStartY,0,0};
-            mPath.addPathPoints(a);
-        }
+    @Override
+    public void touchDown(int startX, int startY) {
+        super.touchDown(startX, startY);
+        //设置曲线开始点
+        mPath.moveTo(startX, startY);
+        float[] a = {startX, startY, 0, 0};
+        mPath.addPathPoints(a);
+    }
+
+    public void touchMove(int currentX, int currentY) {
 
         int border = (int) mPaint.getStrokeWidth();
         mRect.set((int) mStartX - border, (int) mStartY - border,

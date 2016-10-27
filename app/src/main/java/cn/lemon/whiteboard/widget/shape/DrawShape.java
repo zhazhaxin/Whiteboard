@@ -4,6 +4,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 
+import cn.alien95.util.Utils;
 import cn.lemon.whiteboard.widget.BoardView;
 
 /**
@@ -33,7 +34,13 @@ public abstract class DrawShape {
         mPaint.setStrokeCap(Paint.Cap.ROUND);
     }
 
-    public abstract void touchMove(int startX, int startY, int currentX, int currentY);
+    public void touchDown(int startX,int startY){
+        mStartX = startX;
+        mStartY = startY;
+        Utils.Log("start-x : " + mStartX + "  start-y : " + mStartY);
+    }
+
+    public abstract void touchMove(int currentX, int currentY);
 
     public abstract void draw(Canvas canvas);
 
@@ -41,5 +48,12 @@ public abstract class DrawShape {
         mPaint.mColor = mPaintColor;
         mPaint.mWidth = mPaintWidth;
         return mPaint;
+    }
+
+    public int getStartX(){
+        return mStartX;
+    }
+    public int getStartY(){
+        return mStartY;
     }
 }

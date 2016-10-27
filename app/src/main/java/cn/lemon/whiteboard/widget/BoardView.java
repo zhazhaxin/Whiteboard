@@ -87,8 +87,8 @@ public class BoardView extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        int mCurrentX = (int) event.getX();
-        int mCurrentY = (int) event.getY();
+        int currentX = (int) event.getX();
+        int currentY = (int) event.getY();
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 if (mDownAction != null) {
@@ -115,13 +115,13 @@ public class BoardView extends View {
                         break;
                     case Type.MULTI_LINE:
                         mShape = new MultiLineShape(this);
-                        ((MultiLineShape)mShape).touchDown(mStartX,mStartY);
                         break;
                 }
+                mShape.touchDown(mStartX,mStartY);
                 return true;
 
             case MotionEvent.ACTION_MOVE:
-                mShape.touchMove(mStartX, mStartY, mCurrentX, mCurrentY);
+                mShape.touchMove(currentX, currentY);
                 return true;
 
             case MotionEvent.ACTION_UP:
@@ -135,27 +135,27 @@ public class BoardView extends View {
                     resource.mCurvePath = ((CurveShape) mShape).getPath();
                 } else if (mShape instanceof LineShape) {
                     resource.mType = Type.LINE;
-                    resource.mStartX = ((LineShape) mShape).mStartX;
-                    resource.mStartY = ((LineShape) mShape).mStartY;
+                    resource.mStartX = (mShape).getStartX();
+                    resource.mStartY = (mShape).getStartY();
                     resource.mEndX = ((LineShape) mShape).mEndX;
                     resource.mEndY = ((LineShape) mShape).mEndY;
                     resource.mPaint = mShape.getPaint();
                 } else if (mShape instanceof OvalShape) {
                     resource.mType = Type.OVAL;
-                    resource.mStartX = ((OvalShape) mShape).mLeft;
-                    resource.mStartY = ((OvalShape) mShape).mTop;
-                    resource.mEndX = ((OvalShape) mShape).mRight;
-                    resource.mEndY = ((OvalShape) mShape).mBottom;
+                    resource.mStartX = (mShape).getStartX();
+                    resource.mStartY = (mShape).getStartY();
+                    resource.mEndX = ((OvalShape) mShape).mEndX;
+                    resource.mEndY = ((OvalShape) mShape).mEndY;
                     resource.mPaint = mShape.getPaint();
                 } else if (mShape instanceof RectShape) {
                     resource.mType = Type.RECTANGLE;
-                    resource.mStartX = ((RectShape) mShape).mLeft;
-                    resource.mStartY = ((RectShape) mShape).mTop;
-                    resource.mEndX = ((RectShape) mShape).mRight;
-                    resource.mEndY = ((RectShape) mShape).mBottom;
+                    resource.mStartX = (mShape).getStartX();
+                    resource.mStartY = (mShape).getStartY();
+                    resource.mEndX = ((RectShape) mShape).mEndX;
+                    resource.mEndY = ((RectShape) mShape).mEndY;
                     resource.mPaint = mShape.getPaint();
                 } else if(mShape instanceof MultiLineShape){
-                    ((MultiLineShape) mShape).touchUp(mCurrentX,mCurrentY);
+                    ((MultiLineShape) mShape).touchUp(currentX,currentY);
                 }
                 mSavePath.add(resource);
                 invalidate();

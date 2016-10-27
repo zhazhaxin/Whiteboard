@@ -19,7 +19,7 @@ public class OvalShape extends RectShape {
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void draw(Canvas canvas) {
-        canvas.drawOval(mLeft,mTop,mRight,mBottom,mPaint);
+        canvas.drawOval(mStartX,mStartY, mEndX, mEndY,mPaint);
     }
 }
 

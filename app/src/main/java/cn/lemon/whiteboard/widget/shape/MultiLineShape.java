@@ -11,8 +11,6 @@ import cn.lemon.whiteboard.widget.BoardView;
 public class MultiLineShape extends DrawShape {
 
     private static WritablePath mPath = new WritablePath();
-    private float mStartX;
-    private float mStartY;
     private float mEndX;
     private float mEndY;
 
@@ -23,21 +21,20 @@ public class MultiLineShape extends DrawShape {
         super(boardView);
     }
 
-    public void touchDown(int x,int y){
-        mStartX = x;
-        mStartY = y;
-    }
-
-    @Override
-    public void touchMove(int startX, int startY, int currentX, int currentY) {
-        if(mStartX == 0 && mStartY == 0){
+    public void touchDown(int startX, int startY){
+        if(mNextStartX == 0 && mNextStartY == 0){
             mStartX = startX;
             mStartY = startY;
             mPath.moveTo(startX,startY);
         }else {
-            mStartX = mNextStartX;
-            mStartY = mNextStartY;
+            mStartX = (int) mNextStartX;
+            mStartY = (int) mNextStartY;
         }
+    }
+
+
+    @Override
+    public void touchMove(int currentX, int currentY) {
 
         mEndX = currentX;
         mEndY = currentY;
