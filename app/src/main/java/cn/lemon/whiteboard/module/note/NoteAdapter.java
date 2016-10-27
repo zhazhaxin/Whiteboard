@@ -39,7 +39,7 @@ public class NoteAdapter extends RecyclerAdapter<Note> {
         private TextView mTime;
 
         public NoteViewHolder(ViewGroup parent) {
-            super(parent, R.layout.holder_note);
+            super(parent, R.layout.note_holder_note);
         }
 
         @Override
