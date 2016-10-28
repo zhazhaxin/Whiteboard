@@ -163,7 +163,7 @@ public class BoardView extends View {
     //撤回
     public void reCall() {
         if (mSavePath.size() == 0) {
-            Utils.Toast("对不起，不能撤回");
+            Utils.SnackbarShort(this,"对不起，不能撤回");
             return;
         }
         ShapeResource resource = mSavePath.get(mSavePath.size() - 1);
@@ -179,13 +179,13 @@ public class BoardView extends View {
     //恢复
     public void undo() {
         if (mDeletePath.size() == 0) {
-            Utils.Toast("对不起，不能恢复");
+            Utils.SnackbarShort(this,"对不起，不能恢复");
             return;
         }
         ShapeResource resource = mDeletePath.get(mDeletePath.size() - 1);
         if (mShape instanceof MultiLineShape) {
             if(resource.mStartX != MultiLineShape.getNextPointX() || resource.mStartY != MultiLineShape.getNextPointY()){
-                Utils.Toast("对不起，不能恢复");
+                Utils.SnackbarShort(this,"对不起，不能恢复");
                 return;
             }else {
                 MultiLineShape.setNewStartPoint(resource.mEndX, resource.mEndY);
@@ -224,7 +224,6 @@ public class BoardView extends View {
                             resource.mEndX, resource.mEndY, resource.mPaint);
                     break;
             }
-
         }
     }
 
@@ -240,15 +239,16 @@ public class BoardView extends View {
         invalidate();
     }
 
-    //从本地文件读取
-    public void setDrawPaths(List<ShapeResource> data) {
+    //从本地文件读取的笔迹
+    public void updateDrawFromPaths(List<ShapeResource> data) {
         clearScreen();
         mSavePath.addAll(data);
-        updateBitmapFromLocal();
+        loadBitmapFromLocal();
         Utils.Log("setDrawPaths : data.size() : " + data.size());
     }
 
-    public void updateBitmapFromLocal() {
+    //加载本地文件笔迹
+    public void loadBitmapFromLocal() {
         for (ShapeResource resource : mSavePath) {
             if(resource.mPaint != null){
                 resource.mPaint.loadPaint();
@@ -292,7 +292,6 @@ public class BoardView extends View {
         return mDrawBitmap;
     }
 
-    //只限制在笔迹模式下
     public ArrayList<ShapeResource> getNotePath() {
         return mSavePath;
     }

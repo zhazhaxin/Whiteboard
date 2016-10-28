@@ -2,6 +2,7 @@ package cn.lemon.common.base;
 
 import android.animation.ObjectAnimator;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
@@ -311,6 +312,12 @@ public class SuperActivity<P extends SuperPresenter> extends AppCompatActivity {
             mPresenter.onDestroy();
         }
         mPresenter = null;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mPresenter.onActivityResult(requestCode,resultCode,data);
     }
 
     public int dp2px(float dpValue) {

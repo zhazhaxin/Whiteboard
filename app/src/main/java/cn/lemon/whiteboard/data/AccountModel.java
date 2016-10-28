@@ -37,6 +37,7 @@ public class AccountModel extends SuperModel {
             Utils.Toast("笔迹不能为空");
         } else {
             putObject(note.mFileName, note);
+            Utils.Toast("笔迹保存成功");
         }
 
     }
@@ -110,7 +111,7 @@ public class AccountModel extends SuperModel {
         });
     }
 
-    public Object readObjectFromFile(File objectFile) {
+    private Object readObjectFromFile(File objectFile) {
         try {
             ObjectInputStream ois = new ObjectInputStream(new FileInputStream(objectFile));
             Object result = ois.readObject();

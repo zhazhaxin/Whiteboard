@@ -9,7 +9,6 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.GridLayoutManager;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,25 +18,26 @@ import android.widget.PopupWindow;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import java.util.List;
+
 import cn.alien95.util.Utils;
 import cn.lemon.common.base.ToolbarActivity;
+import cn.lemon.common.base.presenter.RequirePresenter;
 import cn.lemon.view.RefreshRecyclerView;
 import cn.lemon.whiteboard.R;
 import cn.lemon.whiteboard.app.Config;
-import cn.lemon.whiteboard.data.AccountModel;
-import cn.lemon.whiteboard.data.CurveModel;
 import cn.lemon.whiteboard.module.account.ImageActivity;
-import cn.lemon.whiteboard.module.account.Note;
 import cn.lemon.whiteboard.module.account.NoteActivity;
 import cn.lemon.whiteboard.widget.BoardView;
 import cn.lemon.whiteboard.widget.FloatAdapter;
 import cn.lemon.whiteboard.widget.FloatViewGroup;
 import cn.lemon.whiteboard.widget.InputDialog;
 import cn.lemon.whiteboard.widget.shape.DrawShape;
+import cn.lemon.whiteboard.widget.shape.ShapeResource;
 
-import static cn.lemon.whiteboard.R.id.note;
 
-public class MainActivity extends ToolbarActivity
+@RequirePresenter(MainPresenter.class)
+public class MainActivity extends ToolbarActivity<MainPresenter>
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private BoardView mBoardView;
@@ -45,7 +45,6 @@ public class MainActivity extends ToolbarActivity
     private FloatAdapter mAdapter;
     private long mFirstPressBackTime = 0;
     private Handler mHandler;
-    private Note mNote;
 
     private boolean isShowingColorSelector = false;
     private boolean isShowingSizeSelector = false;
@@ -105,7 +104,7 @@ public class MainActivity extends ToolbarActivity
         } else {
             if (System.currentTimeMillis() - mFirstPressBackTime > 1000) {
                 mFirstPressBackTime = System.currentTimeMillis();
-                Utils.Toast("再点击一次退出App");
+                Utils.SnackbarShort(getToolbar(), "再点击一次退出App");
             } else
                 super.onBackPressed();
         }
@@ -130,7 +129,7 @@ public class MainActivity extends ToolbarActivity
                 showNoteDialog();
                 break;
             case R.id.save_image_to_app:
-                CurveModel.getInstance().saveCurveToApp(mBoardView.getDrawBitmap());
+                getPresenter().saveImage(mBoardView.getDrawBitmap());
                 break;
             case R.id.color:
                 if (isShowingColorSelector) {
@@ -160,23 +159,18 @@ public class MainActivity extends ToolbarActivity
         switch (id) {
             case R.id.draw_board:
                 break;
-            case note:
+            case R.id.note:
                 Intent intent = new Intent(new Intent(this, NoteActivity.class));
                 startActivityForResult(intent, Config.NOTE_REQUEST_CODE);
                 break;
             case R.id.image:
-                startActivity(ImageActivity.class);
+                getPresenter().startActivity(ImageActivity.class);
                 break;
             case R.id.about:
-                startActivity(AboutActivity.class);
+                getPresenter().startActivity(AboutActivity.class);
                 break;
         }
         return true;
-    }
-
-    public void startActivity(Class target) {
-        Intent intent = new Intent(this, target);
-        startActivity(intent);
     }
 
     //保存笔迹
@@ -186,31 +180,16 @@ public class MainActivity extends ToolbarActivity
         noteDialog.setCancelable(false);
         noteDialog.setTitle("请输入标题");
         noteDialog.setHint("标题");
-        if (mNote != null) {
-            noteDialog.setContent(mNote.mTitle);
+        if (getPresenter().getLocalNote() != null) {
+            noteDialog.setContent(getPresenter().getLocalNote().mTitle);
         }
         noteDialog.show();
         noteDialog.setPositiveClickListener(new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                if (TextUtils.isEmpty(noteDialog.getContent())) {
-                    Utils.Toast("标题不能为空");
-                    return;
-                }
-                Note note = new Note();
-                note.mTitle = noteDialog.getContent().toString();
-                note.mPaths = mBoardView.getNotePath();
-                long time = System.currentTimeMillis();
-                note.mCreateTime = time;
-                note.mFileName = time + "";
-                AccountModel.getInstance().saveNote(note);
-                if (mNote != null) {
-                    AccountModel.getInstance().deleteNoteFile(mNote.mFileName);
-                    mNote = null;
-                }
+                getPresenter().saveNote(noteDialog.getContent(),mBoardView.getNotePath());
                 noteDialog.dismiss();
                 mBoardView.clearScreen();
-                Utils.Toast("保存成功");
             }
         });
         noteDialog.setPassiveClickListener(new DialogInterface.OnClickListener() {
@@ -225,6 +204,10 @@ public class MainActivity extends ToolbarActivity
                 }, 100);
             }
         });
+    }
+
+    public void updateDrawPaths(List<ShapeResource> paths){
+        mBoardView.updateDrawFromPaths(paths);
     }
 
     //设置画笔大小
@@ -285,19 +268,6 @@ public class MainActivity extends ToolbarActivity
         recyclerView.setAdapter(adapter);
 
         mColorWindow.showAsDropDown(getToolbar());
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == Config.NOTE_REQUEST_CODE && resultCode == Config.NOTE_RESULT_CODE) {
-            mNote = (Note) data.getSerializableExtra(Config.NOTE_DATA);
-            mBoardView.setDrawPaths(mNote.mPaths);
-        }
-    }
-
-    public void setNoteNull() {
-        mNote = null;
     }
 
     public void setShowingColorSelector(boolean b) {

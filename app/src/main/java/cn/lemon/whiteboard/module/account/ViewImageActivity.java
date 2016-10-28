@@ -20,9 +20,6 @@ import cn.lemon.common.base.ToolbarActivity;
 import cn.lemon.whiteboard.R;
 
 
-/**
- * Created by linlongxin on 2016/1/22.
- */
 public class ViewImageActivity extends ToolbarActivity {
 
     public static final String IMAGES_DATA_LIST = "DATA_LIST";

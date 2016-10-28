@@ -33,7 +33,7 @@ public class NoteAdapter extends RecyclerAdapter<Note> {
         return new NoteViewHolder(parent);
     }
 
-    class NoteViewHolder extends BaseViewHolder<Note>{
+    private class NoteViewHolder extends BaseViewHolder<Note>{
 
         private TextView mTitle;
         private TextView mTime;
@@ -76,7 +76,7 @@ public class NoteAdapter extends RecyclerAdapter<Note> {
             });
         }
 
-        public void deleteDialog(final Note note) {
+        private void deleteDialog(final Note note) {
             new MaterialDialog.Builder(itemView.getContext()).setTitle("是否删除")
                     .setCancelable(true)
                     .setOnPositiveClickListener(new DialogInterface.OnClickListener() {

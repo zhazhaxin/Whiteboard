@@ -8,7 +8,6 @@ import android.os.Handler;
 import android.os.Looper;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -22,19 +21,11 @@ import cn.lemon.common.base.model.SuperModel;
 
 public class CurveModel extends SuperModel {
 
-    //保存图片目录地址
-    private final String PUBLIC_IMG_DIR = "Whiteboard";
-    private final String IMAGE_HEADER = "Whiteboard_";
-    private File mPublicRootDir;
     private File mAppRootDir;
     private Handler mHandler;
 
     public CurveModel() {
-        mPublicRootDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), PUBLIC_IMG_DIR);
         mAppRootDir = getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        if (!mPublicRootDir.exists()) {
-            mPublicRootDir.mkdir();
-        }
         if (!mAppRootDir.exists()) {
             mAppRootDir.mkdir();
         }
@@ -51,7 +42,7 @@ public class CurveModel extends SuperModel {
         saveImage(resource, image);
     }
 
-    public void saveImage(final Bitmap resource, final File target) {
+    private void saveImage(final Bitmap resource, final File target) {
         if (resource.getByteCount() == 0) {
             Utils.Toast("bitmap is empty");
             return;
@@ -65,16 +56,15 @@ public class CurveModel extends SuperModel {
                     out.flush();
                     out.close();
                     // 最后通知图库更新
-                    getContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + target.getAbsolutePath())));
+                    getContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
+                            Uri.parse("file://" + target.getAbsolutePath())));
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            Utils.Toast("保存成功");
+                            Utils.Toast("保存图片成功");
                         }
                     });
                     Utils.Log("图片地址 ：" + target.getAbsolutePath());
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

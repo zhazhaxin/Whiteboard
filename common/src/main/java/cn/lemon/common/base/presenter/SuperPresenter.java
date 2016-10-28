@@ -1,5 +1,7 @@
 package cn.lemon.common.base.presenter;
 
+import android.content.Intent;
+
 /**
  * MVP模型中的presenter层，通过getView()方法直接调用对应的activity（View层）
  *
@@ -28,4 +30,6 @@ public class SuperPresenter<V> {
 
     //在view的onDestroy中调用
     public void onDestroy(){}
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data){};
 }

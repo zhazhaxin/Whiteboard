@@ -47,7 +47,7 @@ class FunctionAdapter extends FloatAdapter {
             case 0:
                 mBoardView.clearScreen();
                 if(getContext() instanceof MainActivity){
-                    ((MainActivity) getContext()).setNoteNull();
+                    ((MainActivity) getContext()).getPresenter().setLocalNoteNull();
                 }
                 break;
             case 1:

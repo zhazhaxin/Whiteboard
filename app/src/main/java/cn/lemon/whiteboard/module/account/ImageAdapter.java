@@ -29,7 +29,7 @@ public class ImageAdapter extends RecyclerAdapter<String> {
         return new ImageViewHolder(parent);
     }
 
-    class ImageViewHolder extends BaseViewHolder<String> {
+    private class ImageViewHolder extends BaseViewHolder<String> {
 
         private ImageView mImage;
 
