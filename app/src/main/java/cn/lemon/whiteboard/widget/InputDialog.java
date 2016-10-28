@@ -20,7 +20,7 @@ public class InputDialog extends AppCompatDialog {
     private Context mContext;
 
     private TextView mTitle;
-    private EditText mInputContent;
+    private EditText mInput;
     private TextView mPassiveText;
     private TextView mPositiveText;
 
@@ -44,7 +44,7 @@ public class InputDialog extends AppCompatDialog {
         View dialogContent = LayoutInflater.from(mContext).inflate(R.layout.widget_dialog_input, null);
 
         mTitle = (TextView) dialogContent.findViewById(R.id.title);
-        mInputContent = (EditText) dialogContent.findViewById(R.id.input_content);
+        mInput = (EditText) dialogContent.findViewById(R.id.input_content);
         mPassiveText = (TextView) dialogContent.findViewById(R.id.passive_button);
         mPositiveText = (TextView) dialogContent.findViewById(R.id.positive_button);
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -74,7 +74,6 @@ public class InputDialog extends AppCompatDialog {
         mPassiveText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dismiss();
                 if (listener != null) {
                     listener.onClick(InputDialog.this, 1);
                 }
@@ -83,7 +82,18 @@ public class InputDialog extends AppCompatDialog {
     }
 
     public String getContent(){
-        return mInputContent.getText().toString();
+        return mInput.getText().toString();
+    }
+
+    public EditText getInputView(){
+        return mInput;
+    }
+
+    public TextView getPassiveButton(){
+        return mPassiveText;
+    }
+    public TextView getPositiveText(){
+        return mPositiveText;
     }
 
     public void setTitle(String content){
@@ -91,11 +101,11 @@ public class InputDialog extends AppCompatDialog {
     }
 
     public void setHint(String content){
-        mInputContent.setHint(content);
+        mInput.setHint(content);
     }
 
     public void setContent(String content){
-        mInputContent.setText(content);
+        mInput.setText(content);
     }
 
     public String getTitle(){

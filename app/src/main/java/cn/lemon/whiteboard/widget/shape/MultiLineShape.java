@@ -53,4 +53,16 @@ public class MultiLineShape extends DrawShape {
         mNextStartX = -1f;
         mNextStartY = -1f;
     }
+
+    public static void setNewStartPoint(float x,float y){
+        mNextStartX = x;
+        mNextStartY = y;
+    }
+
+    public static float getNextPointX(){
+        return mNextStartX;
+    }
+    public static float getNextPointY(){
+        return mNextStartY;
+    }
 }

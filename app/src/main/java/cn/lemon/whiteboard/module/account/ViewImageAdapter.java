@@ -35,19 +35,29 @@ class ViewImageAdapter extends PagerAdapter {
         image.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         image.setAdjustViewBounds(true);
         image.setScaleType(ImageView.ScaleType.FIT_CENTER);
+
         if(mCacheBitmaps.containsKey(key)){
-            image.setImageBitmap(mCacheBitmaps.get(key).get());
-        }else {
-            ImageUtil.getBitmapFromPath(key, new ImageUtil.Callback() {
-                @Override
-                public void callback(Bitmap bitmap) {
-                    image.setImageBitmap(bitmap);
-                    mCacheBitmaps.put(key,new WeakReference<>(bitmap));
-                }
-            });
+            Bitmap bitmap = mCacheBitmaps.get(key).get();
+            if (bitmap != null) {
+                image.setImageBitmap(bitmap);
+            } else {
+                setBitmapFromFile(key, image);
+            }
+        } else {
+            setBitmapFromFile(key, image);
         }
         container.addView(image);
         return image;
+    }
+
+    private void setBitmapFromFile(final String key, final ImageView imageView) {
+        ImageUtil.getBitmapFromPath(key, new ImageUtil.Callback() {
+            @Override
+            public void callback(Bitmap bitmap) {
+                imageView.setImageBitmap(bitmap);
+                mCacheBitmaps.put(key, new WeakReference<>(bitmap));
+            }
+        });
     }
 
     @Override

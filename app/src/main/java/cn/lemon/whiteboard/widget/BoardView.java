@@ -166,8 +166,12 @@ public class BoardView extends View {
             Utils.Toast("对不起，不能撤回");
             return;
         }
-        mDeletePath.add(mSavePath.get(mSavePath.size() - 1));
+        ShapeResource resource = mSavePath.get(mSavePath.size() - 1);
+        mDeletePath.add(resource);
         mSavePath.remove(mSavePath.size() - 1);
+        if (mShape instanceof MultiLineShape) {
+            MultiLineShape.setNewStartPoint(resource.mStartX, resource.mStartY);
+        }
         updateBitmap();
         isRecentRecallOrUndo = true;
     }
@@ -178,7 +182,16 @@ public class BoardView extends View {
             Utils.Toast("对不起，不能恢复");
             return;
         }
-        mSavePath.add(mDeletePath.get(mDeletePath.size() - 1));
+        ShapeResource resource = mDeletePath.get(mDeletePath.size() - 1);
+        if (mShape instanceof MultiLineShape) {
+            if(resource.mStartX != MultiLineShape.getNextPointX() || resource.mStartY != MultiLineShape.getNextPointY()){
+                Utils.Toast("对不起，不能恢复");
+                return;
+            }else {
+                MultiLineShape.setNewStartPoint(resource.mEndX, resource.mEndY);
+            }
+        }
+        mSavePath.add(resource);
         mDeletePath.remove(mDeletePath.size() - 1);
         updateBitmap();
         isRecentRecallOrUndo = true;
@@ -267,7 +280,7 @@ public class BoardView extends View {
     }
 
     public void setDrawType(int type) {
-        //如果点击撤回或者恢复后重新绘制，则情况mDeletePath
+        //如果点击撤回或者恢复后重新绘制，则清空mDeletePath
         if (isRecentRecallOrUndo) {
             mDeletePath.clear();
             isRecentRecallOrUndo = false;

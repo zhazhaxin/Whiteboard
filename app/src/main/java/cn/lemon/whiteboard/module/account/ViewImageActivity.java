@@ -28,11 +28,10 @@ public class ViewImageActivity extends ToolbarActivity {
     public static final String IMAGES_DATA_LIST = "DATA_LIST";
     public static final String IMAGE_NUM = "IMAGE_NUM";
 
-    private ViewPager viewPager;
-    private TextView number;
-    private List<String> data;
-    private int position;
-    private int dataLength = 0;
+    private ViewPager mViewPager;
+    private TextView mNumber;
+    private List<String> mData;
+    private int mDataSize = 0;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -41,18 +40,18 @@ public class ViewImageActivity extends ToolbarActivity {
         setContentView(R.layout.account_activity_view_image);
         getWindow().setStatusBarColor(Color.BLACK);
 
-        viewPager = (ViewPager) findViewById(R.id.view_pager);
-        number = (TextView) findViewById(R.id.number);
+        mViewPager = (ViewPager) findViewById(R.id.view_pager);
+        mNumber = (TextView) findViewById(R.id.number);
 
-        data = (List<String>) getIntent().getSerializableExtra(IMAGES_DATA_LIST);
-        position = getIntent().getIntExtra(IMAGE_NUM, -1);
-        dataLength = data.size();
+        mData = (List<String>) getIntent().getSerializableExtra(IMAGES_DATA_LIST);
+        int mPosition = getIntent().getIntExtra(IMAGE_NUM, -1);
+        mDataSize = mData.size();
 
-        viewPager.setAdapter(new ViewImageAdapter(data, this));
-        viewPager.setCurrentItem(position);
-        number.setText(position + 1 + "/" + dataLength);
+        mViewPager.setAdapter(new ViewImageAdapter(mData, this));
+        mViewPager.setCurrentItem(mPosition);
+        mNumber.setText(mPosition + 1 + "/" + mDataSize);
 
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
@@ -60,7 +59,7 @@ public class ViewImageActivity extends ToolbarActivity {
 
             @Override
             public void onPageSelected(int position) {
-                number.setText(viewPager.getCurrentItem() + 1 + "/" + dataLength);
+                mNumber.setText(mViewPager.getCurrentItem() + 1 + "/" + mDataSize);
             }
 
             @Override
@@ -82,7 +81,7 @@ public class ViewImageActivity extends ToolbarActivity {
         super.onOptionsItemSelected(item);
         switch (item.getItemId()) {
             case R.id.share:
-                share(data.get(viewPager.getCurrentItem()));
+                share(mData.get(mViewPager.getCurrentItem()));
                 break;
         }
         return true;

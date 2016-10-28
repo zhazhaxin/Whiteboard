@@ -35,6 +35,8 @@ import cn.lemon.whiteboard.widget.FloatViewGroup;
 import cn.lemon.whiteboard.widget.InputDialog;
 import cn.lemon.whiteboard.widget.shape.DrawShape;
 
+import static cn.lemon.whiteboard.R.id.note;
+
 public class MainActivity extends ToolbarActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -158,7 +160,7 @@ public class MainActivity extends ToolbarActivity
         switch (id) {
             case R.id.draw_board:
                 break;
-            case R.id.note:
+            case note:
                 Intent intent = new Intent(new Intent(this, NoteActivity.class));
                 startActivityForResult(intent, Config.NOTE_REQUEST_CODE);
                 break;
@@ -181,6 +183,7 @@ public class MainActivity extends ToolbarActivity
     public void showNoteDialog() {
 
         final InputDialog noteDialog = new InputDialog(this);
+        noteDialog.setCancelable(false);
         noteDialog.setTitle("请输入标题");
         noteDialog.setHint("标题");
         if (mNote != null) {
@@ -206,14 +209,20 @@ public class MainActivity extends ToolbarActivity
                     mNote = null;
                 }
                 noteDialog.dismiss();
-                Utils.Toast("保存成功");
                 mBoardView.clearScreen();
+                Utils.Toast("保存成功");
             }
         });
         noteDialog.setPassiveClickListener(new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                mBoardView.updateBitmap();
+                noteDialog.dismiss();
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mBoardView.updateBitmap();
+                    }
+                }, 100);
             }
         });
     }
@@ -283,13 +292,7 @@ public class MainActivity extends ToolbarActivity
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == Config.NOTE_REQUEST_CODE && resultCode == Config.NOTE_RESULT_CODE) {
             mNote = (Note) data.getSerializableExtra(Config.NOTE_DATA);
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    mBoardView.setDrawPaths(mNote.mPaths);
-                }
-            });
-
+            mBoardView.setDrawPaths(mNote.mPaths);
         }
     }
 
