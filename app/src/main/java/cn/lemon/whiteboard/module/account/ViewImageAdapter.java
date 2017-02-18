@@ -72,6 +72,7 @@ class ViewImageAdapter extends PagerAdapter {
 
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
+        ((ImageView)object).setImageBitmap(null);
         container.removeView((View) object);
     }
 

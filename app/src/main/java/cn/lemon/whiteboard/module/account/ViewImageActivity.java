@@ -10,6 +10,8 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.io.File;
@@ -35,7 +37,18 @@ public class ViewImageActivity extends ToolbarActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.account_activity_view_image);
-        getWindow().setStatusBarColor(Color.BLACK);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(Color.BLACK);
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            ViewGroup contentView = (ViewGroup) findViewById(android.R.id.content);
+            View statusBarView = new View(this);
+            ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                    Utils.getStatusBarHeight(this));
+            statusBarView.setBackgroundColor(Color.BLACK);
+            contentView.addView(statusBarView, lp);
+        }
 
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
         mNumber = (TextView) findViewById(R.id.number);
@@ -93,7 +106,7 @@ public class ViewImageActivity extends ToolbarActivity {
             intent.putExtra(Intent.EXTRA_STREAM, u);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
-        }else {
+        } else {
             Utils.Toast("图片不存在");
         }
     }

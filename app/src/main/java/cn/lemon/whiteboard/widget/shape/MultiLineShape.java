@@ -42,6 +42,9 @@ public class MultiLineShape extends DrawShape {
 
     @Override
     public void draw(Canvas canvas) {
+        if(mEndX == 0 && mEndY == 0){
+            return;
+        }
         if(mStartX != mEndX || mStartY != mEndY){
             canvas.drawLine(mStartX,mStartY,mEndX,mEndY,mPaint);
             Utils.Log("MultiLineShape start-x : " + mStartX + "  start-y : " + mStartY +

@@ -219,7 +219,7 @@ public class MainActivity extends ToolbarActivity<MainPresenter>
             isShowingColorSelector = false;
         }
         isShowingSizeSelector = true;
-        View view = LayoutInflater.from(this).inflate(R.layout.window_size_selector, null);
+        View view = LayoutInflater.from(this).inflate(R.layout.main_window_size_selector, null);
         SeekBar seekBar = (SeekBar) view.findViewById(R.id.seek_bar);
         final TextView size = (TextView) view.findViewById(R.id.size);
         int numSize = (int) DrawShape.mPaintWidth;
@@ -258,7 +258,7 @@ public class MainActivity extends ToolbarActivity<MainPresenter>
             isShowingSizeSelector = false;
         }
         isShowingColorSelector = true;
-        View view = LayoutInflater.from(this).inflate(R.layout.window_color_selector, null);
+        View view = LayoutInflater.from(this).inflate(R.layout.main_window_color_selector, null);
         mColorWindow = new PopupWindow(view, ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
 

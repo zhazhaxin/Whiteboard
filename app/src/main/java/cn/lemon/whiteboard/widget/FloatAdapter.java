@@ -23,7 +23,7 @@ public abstract class FloatAdapter {
      * 获取每个子功能view
      */
     public View getItem(final int position) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.widget_float_item, null);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.widget_float_view, null);
         ((TextView) view.findViewById(R.id.hint)).setText(getItemHint(position));
         ImageView item = (ImageView) view.findViewById(R.id.function_button);
         if (getItemResource(position) == 0) {

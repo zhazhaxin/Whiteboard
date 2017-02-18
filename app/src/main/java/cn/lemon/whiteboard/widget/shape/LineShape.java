@@ -17,6 +17,9 @@ public class LineShape extends DrawShape {
     //ACTION_MOVE更新画布，调用这里
     @Override
     public void draw(Canvas canvas) {
+        if(mEndX == 0 && mEndY == 0){
+            return;
+        }
         canvas.drawLine(mStartX, mStartY, mEndX, mEndY, mPaint);
     }
 }
