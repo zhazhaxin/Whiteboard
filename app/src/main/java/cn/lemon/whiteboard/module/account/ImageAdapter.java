@@ -47,7 +47,7 @@ public class ImageAdapter extends RecyclerAdapter<String> {
         public void onItemViewClick(String object) {
             super.onItemViewClick(object);
             Intent intent = new Intent(itemView.getContext(),ViewImageActivity.class);
-            intent.putExtra(ViewImageActivity.IMAGES_DATA_LIST, (Serializable) getData());
+            intent.putExtra(ViewImageActivity.IMAGES_DATA_LIST, (Serializable) ImageAdapter.this.getData());
             intent.putExtra(ViewImageActivity.IMAGE_NUM, getAdapterPosition());
             itemView.getContext().startActivity(intent);
         }

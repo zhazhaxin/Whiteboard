@@ -29,7 +29,7 @@ public class ImageActivity extends ToolbarActivity<ImagePresenter> {
         mRecyclerView.setItemSpace(Utils.dip2px(4),Utils.dip2px(4),Utils.dip2px(4),Utils.dip2px(4));
         mAdapter = new ImageAdapter(this);
         mRecyclerView.setAdapter(mAdapter);
-        mRecyclerView.setRefreshAction(new Action() {
+        mRecyclerView.addRefreshAction(new Action() {
             @Override
             public void onAction() {
                 getPresenter().getData();

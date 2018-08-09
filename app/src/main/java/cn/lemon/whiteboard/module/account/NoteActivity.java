@@ -27,7 +27,7 @@ public class NoteActivity extends ToolbarActivity<NotePresenter> {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mAdapter = new NoteAdapter(this);
         mRecyclerView.setAdapter(mAdapter);
-        mRecyclerView.setRefreshAction(new Action() {
+        mRecyclerView.addRefreshAction(new Action() {
             @Override
             public void onAction() {
                 getPresenter().getData();

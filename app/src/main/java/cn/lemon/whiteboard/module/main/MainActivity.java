@@ -147,6 +147,7 @@ public class MainActivity extends ToolbarActivity<MainPresenter>
                     showSizeSelectorWindow();
                 }
                 break;
+                default:break;
         }
         return true;
     }
@@ -169,6 +170,8 @@ public class MainActivity extends ToolbarActivity<MainPresenter>
             case R.id.about:
                 getPresenter().startActivity(AboutActivity.class);
                 break;
+                default:
+                    break;
         }
         return true;
     }

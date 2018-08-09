@@ -11,7 +11,7 @@
         android:background="@color/orangeLight"
         android:layout_width="200dp"
         android:layout_height="200dp"
-        app:refresh_able="false"
-        app:load_more_able="false" />
+        app:refresh_enable="false"
+        app:load_more_enable="false" />
 
 </LinearLayout>

@@ -93,6 +93,8 @@ public class ViewImageActivity extends ToolbarActivity {
             case R.id.share:
                 share(mData.get(mViewPager.getCurrentItem()));
                 break;
+            default:
+                break;
         }
         return true;
     }
